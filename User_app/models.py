@@ -9,6 +9,9 @@ from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
+    '''
+    프로필. 거주지역과 생성일, 수정일,
+    '''
     class Meta:
         db_table = 'profile'
     username = models.OneToOneField(
