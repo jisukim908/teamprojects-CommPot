@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+회원가입
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="wrap">
+        <h2 class="title-center"> Sign_Up </h2>
+        <form class="form-area" method="post
+        " action="/sign-up">
+            {% csrf_token %}
+            <div class="form-group mt-2 mb-2">
+                <label for="username">ID :</label>
+                <input type="text" class="form-control" id="username" name="username">
+            </div>
+            <div class="form-group mt-2 mb-2">
+                <label for="bio">e-mail :</label>
+                <input type="text" class="form-control" id="bio" name="bio">
+            </div>
+            <div class="form-group mt-2 mb-2">
+                <label for="password">PW :</label>
+                <input type="password" class="form-control" id="password" name="password">
+            </div>
+            <div class="form-group mt-2 mb-2">
+                <label for="password2">rewrite PW :</label>
+                <input type="password" class="form-control" id="password2" name="password2">
+            </div>
+            <hr>
+            <div style="float: right">
+                <button type="button" class="btn btn-warning">sign up</button>
+            </div>
+        </form>
+        </n>
+        <a href="/sign-in" class="btn btn-secondary">log in</a>
+    </div>
+    </form>
+
+</div>
+</div>
+{% endblock %}

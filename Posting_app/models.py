@@ -1,4 +1,5 @@
 from django.db import models
+
 from user.models import UserModel
 
 # Create your models here.
@@ -21,3 +22,4 @@ class PostingComment(models.Model):
     comment = models.CharField(max_length=250)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+

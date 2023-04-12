@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect
 from .models import Posting, PostingComment
 from django.http import HttpResponse
@@ -57,3 +58,4 @@ def delete_posting(request,id):
     
     #return redirect('/api/posts/delete'+str(id))
     return HttpResponse('글 삭제 완료')
+
