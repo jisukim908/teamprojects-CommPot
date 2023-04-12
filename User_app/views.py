@@ -1,35 +1,45 @@
 
 from .models import Profile, UserModel
 from django.shortcuts import render, redirect
-from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 import re
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 # User_app/views.py
 
 
+@csrf_exempt
 def sign_up_view(request):
     username_regex = '^[A-Za-z][A-Za-z0-9_]{7,29}$'
     if request.method == "GET":  # GET 메서드로 요청이 들어 올 경우
         return render(request, "User/signup.html")
     elif request.method == "POST":  # POST 메서드로 요청이 들어 올 경우
         input_dictionary = {
-            'username': request.POST.get("username", "").trim(),
-            'email': request.POST.get("email", "").trim(),
-            'password': request.POST.get("password", "").trim(),
-            'password2': request.POST.get("password2", "").trim(),
+            'username': request.POST.get("username", "").strip(),
+            'email': request.POST.get("email", "").strip(),
+            'password': request.POST.get("password", "").strip(),
+            'password2': request.POST.get("password2", "").strip(),
         }
+        if UserModel.objects.filter(username=input_dictionary['username']).exists():
+
+            return render(request, "User/signup.html", {'error': 'Already exist ID. Try others.'})
 
         if not all(input_dictionary.values()):
+
             return render(request, "User/signup.html", {'error': 'please input every field.'})
         if re.match(username_regex, input_dictionary['username']) is None:
+
             return render(request, "User/signup.html", {'error': 'Wrong ID. Use alphabets, numbers, and "_". Start with alphabet, 8~30 letters.'})
         if re.match('^[\w\.-]+@+([\w-]+\.)+[\w-]{2,4}$', input_dictionary['email']) is None:
+
             return render(request, "User/signup.html", {'error': 'Invalid email address'})
         if re.match('^[0-9]*$', input_dictionary['password']) or len(input_dictionary['password']) < 8:
+
             return render(request, "User/signup.html", {'error': 'Invalid PW. 8 or more letters, no only numbers.'})
         if input_dictionary['password'] != input_dictionary['password2']:
+
             return render(request, "User/signup.html", {'error': 'password confirmation doesn\'t match.'})
         new_user = UserModel.objects.create(
             username=input_dictionary['username'],
@@ -43,7 +53,9 @@ def sign_up_view(request):
         return redirect('/api/user/login')
 
 
+@csrf_exempt
 def sign_in_view(request):
+    """username과 password를 받아 로그인"""
     if request.method == 'GET':
         return render(request, "user/signin.html")
     elif request.method == 'POST':
@@ -51,9 +63,19 @@ def sign_in_view(request):
         password = request.POST.get('password', '')
         user = authenticate(request, username=username, password=password)
         if not user:
+
             return render(request, "user/signin.html", {'error': 'Invalid ID or PW.'})
         login(request, user)
+
         return redirect('/')
+
+
+@login_required
+def logout_view(request):
+    '''로그인한 회원이 로그아웃'''
+
+    logout(request)
+    return redirect('/')
 
 
 def profile_view(request, id: int) -> HttpResponse | HttpResponseRedirect:
