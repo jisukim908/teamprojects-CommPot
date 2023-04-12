@@ -26,4 +26,4 @@ def profile_view(request, id: int) -> HttpResponse | HttpResponseRedirect:
         opened_profile.locate = locate
         opened_profile.description = description
         opened_profile.save()
-        return redirect('/api/proflie/'+id)
+        return redirect('/api/proflie/'+str(id))
