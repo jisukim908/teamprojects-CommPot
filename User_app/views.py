@@ -10,8 +10,16 @@ from django.views.decorators.csrf import csrf_exempt
 # User_app/views.py
 
 
-@csrf_exempt
-def sign_up_view(request):
+@csrf_exempt  # 추후 템플릿에 토큰 추가해서 제거필요
+def sign_up_view(request) -> HttpResponse | HttpResponseRedirect:
+    """
+    회원가입 기능. username, email, password, password confirm을 입력받는다.
+    아이디: 8~30자, 알파벳으로 시작, 알파벳과 숫자, _ 이용가능
+    이메일: 형식 갖춰야함
+    비밀번호: 8자 이상, 전부 숫자면 안됨
+
+    아이디 중복은 안됨
+    """
     username_regex = '^[A-Za-z][A-Za-z0-9_]{7,29}$'
     if request.method == "GET":  # GET 메서드로 요청이 들어 올 경우
         return render(request, "User/signup.html")
@@ -54,7 +62,7 @@ def sign_up_view(request):
 
 
 @csrf_exempt
-def sign_in_view(request):
+def sign_in_view(request) -> HttpResponseRedirect | HttpResponse:
     """username과 password를 받아 로그인"""
     if request.method == 'GET':
         return render(request, "user/signin.html")
@@ -71,7 +79,7 @@ def sign_in_view(request):
 
 
 @login_required
-def logout_view(request):
+def logout_view(request) -> HttpResponseRedirect:
     '''로그인한 회원이 로그아웃'''
 
     logout(request)
