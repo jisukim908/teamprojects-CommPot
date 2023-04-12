@@ -59,7 +59,7 @@ def write_comment(request,id):
         PC.posting =  current_posting
         PC.save()
 
-        #return redirect('/api/posts/comment'+str(id))
+        #return redirect('/api/posts'+str(id))
         return HttpResponse('댓글 저장 완료')
 
 
@@ -69,6 +69,6 @@ def delete_comment(request,id):
     current_posting = comment.posting.id
     comment.delete()
 
-    #return redirect('/api/posts/comment/delete'+str(current_posting))
+    #return redirect('/api/posts'+str(id))
     return HttpResponse('댓글 삭제 완료')
 
