@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 @csrf_exempt  # 추후 템플릿에 토큰 추가해서 제거필요
-def sign_up_view(request) -> HttpResponse | HttpResponseRedirect:
+def sign_up_view(request) -> HttpResponse:
     """
     회원가입 기능. username, email, password, password confirm을 입력받는다.
     아이디: 8~30자, 알파벳으로 시작, 알파벳과 숫자, _ 이용가능
@@ -62,7 +62,7 @@ def sign_up_view(request) -> HttpResponse | HttpResponseRedirect:
 
 
 @csrf_exempt
-def sign_in_view(request) -> HttpResponseRedirect | HttpResponse:
+def sign_in_view(request) -> HttpResponse:
     """username과 password를 받아 로그인"""
     if request.method == 'GET':
         return render(request, "user/signin.html")
@@ -86,7 +86,7 @@ def logout_view(request) -> HttpResponseRedirect:
     return redirect('/')
 
 
-def profile_view(request, id: int) -> HttpResponse | HttpResponseRedirect:
+def profile_view(request, id: int) -> HttpResponse:
     '''
     모든 사용자가 프로필 페이지를 조회할 수 있습니다. 프로필과 프로필 소유자의 글 목록이 주어집니다.
     오직 프로필 소유자 일때만 프로필의 수정을 할 수 있습니다.
