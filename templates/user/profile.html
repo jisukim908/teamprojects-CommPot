@@ -10,7 +10,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Edit your Profile</h5>
             </div>
             <div class="modal-body">
-                <form method="post" action="/api/profile/{{id}}">
+                <form class="form-area" method="post" action="/api/profile/{{profile.id}}">
                     {% csrf_token %}
 
                     <div class="form-group mt-2 mb-2">
