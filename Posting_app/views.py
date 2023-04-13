@@ -35,11 +35,6 @@ def delete_posting_view(request, id):
 def posting_detail_view(request, id):
     my_posting = Posting.objects.get(id=id)
     posting_comment = PostingComment.objects.filter(posting_id = id)
-    return render(request,'posting/post_detail.html',{'posting':my_posting,'comment':posting_comment})
-   
-
-def posting_edit_view(request, id):
-    my_posting = Posting.objects.get(id=id)
     if request.method == 'POST':
         title = request.POST.get("title", "")
         content = request.POST.get("content", "")
@@ -48,8 +43,8 @@ def posting_edit_view(request, id):
         my_posting.save()
         return redirect('/api/posts/'+str(id))
     else:
-        my_posting = Posting.objects.get(id=id)
-        return render(request, 'posting/post_edit.html', {'posting':my_posting})
+        return render(request, 'posting/post_detail.html', {'posting':my_posting, 'comment':posting_comment})
+   
 
 
 def write_comment_view(request,id):

@@ -6,7 +6,6 @@ from . import views
 urlpatterns = [
     path('api/posts/', views.post_view, name='post'),
     path('api/posts/<int:id>', views.posting_detail_view, name='detail-posting'),
-    path('api/posts/edit/<int:id>', views.posting_edit_view, name='edit-posting'),
     path('api/posts/delete/<int:id>',
          views.delete_posting_view, name='delete-posting'),
     path('api/posts/comment/<int:id>',

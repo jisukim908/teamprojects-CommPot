@@ -5,6 +5,33 @@
 {% endblock %}
 
 {% block content %}
+<!-- 모달창 시작 -->
+<div class="modal fade" data-bs-backdrop="static" id="exampleModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit My Posting</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-area" method="post" action="/api/posts/{{posting.id}}">
+                    {% csrf_token %}
+                    <div class="form-group mt-2 mb-2">
+                        <label for="username">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{posting.title}}">
+                    </div>
+                    <div class="form-group mt-2 mb-2">
+                        <label for="content">Content:</label>
+                        <textarea class="form-control" style="resize: none" name='content'
+                            id="content">{{posting.content}}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 모달창 끝 -->
 <div class="container timeline-container">
     <div class="row">
         <!-- 왼쪽 컬럼 -->
@@ -52,9 +79,10 @@
                                         <h5 style="font-size: small">{{ posting.updated_at|timesince }}전</h5>
                                         </p>
                                         {% if posting.author == user %}
-                                        <a href="/api/posts/edit/{{posting.id}}">
-                                            <span class="badge rounded-pill bg-danger">수정</span>
-                                        </a>
+                                        <button type="button" class="badge rounded-pill bg-danger"
+                                            data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            수정
+                                        </button>
                                         <a href="/api/posts/delete/{{posting.id}}">
                                             <span class="badge rounded-pill bg-danger">삭제</span>
                                         </a>
