@@ -19,10 +19,6 @@
                                     <h5>Locate at</h5><span>{{profile.locate}}</span>
                                     <hr>
                                     <!-- Button trigger modal -->
-                                    {% if profile.username == user %}
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal"> Edit Profile </button>
-                                    {% else %}
                                     <a href="/api/user/login">
                                         <button type="button" class="btn btn-primary">
                                             Login to Edit
