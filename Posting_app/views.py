@@ -28,7 +28,7 @@ def delete_posting(request, id):
     # return HttpResponse('글 삭제 완료')
     
 @login_required
-def posting_detail(request):
+def posting_detail(request,id):
     # 수정하기
     if request.method == 'POST':
         my_posting = Posting.objects.get(id=id)

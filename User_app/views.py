@@ -31,7 +31,7 @@ def sign_in_view(request):
     return render(request, "user/signin.html")
 
 
-def profile_view(request, id: int) -> HttpResponse | HttpResponseRedirect:
+def profile_view(request, id: int) -> HttpResponse or HttpResponseRedirect:
     '''
     모든 사용자가 프로필 페이지를 조회할 수 있습니다. 프로필과 프로필 소유자의 글 목록이 주어집니다.
     오직 프로필 소유자 일때만 프로필의 수정을 할 수 있습니다.
