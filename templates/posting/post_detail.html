@@ -47,9 +47,9 @@
                                     <h4 class="card-title">{{ posting.title }}</h4>
                                     <div style="text-align: right">
                                         <p class="card-text">
-                                        <h5 class="card-title">{{ user.username }}</h5>
+                                        <h5 class="card-title">{{posting.author}}</h5>
                                         <h5 style="font-size: small">{{ posting.created_at }}</h5>
-                                        <h5 style="font-size: small">{{ posting.created_at|timesince }}전</h5>
+                                        <h5 style="font-size: small">{{ posting.updated_at|timesince }}전</h5>
                                         </p>
                                         {% if posting.author == user %}
                                         <a href="/api/posts/edit/{{posting.id}}">
@@ -83,10 +83,15 @@
                             <div class="media">
                                 <div class="media-body">
                                     <h5 class="mt-0"> {{ cm.comment }} </h5>
-                                    <span> {{ cm.author }} - {{ cm.created_at | timesince }} 전</span>
                                 </div>
-                                {% if cm.author == user %}
                                 <div style="float: right">
+                                    <span style="font-size: small">
+                                        {{ cm.author }} - {{ cm.created_at | timesince }}전
+                                    </span>
+                                </div>
+                                <br>
+                                {% if cm.author == user %}
+                                <div style=" float: right">
                                     <a href="/api/posts/comment/delete/{{cm.id}}">
                                         <span class="badge bg-danger">삭제</span>
                                     </a>
