@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block title %}{{ profile.username }}'s profile{% endblock %}
+{% block content %}
+<!-- 모달창 시작 -->
+<div class="modal fade" data-bs-backdrop="static" id="exampleModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit your Profile</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/api/profile/{{id}}">
+                    {% csrf_token %}
+
+                    <div class="form-group mt-2 mb-2">
+                        <label for="username">Region:</label>
+                        <input type="text" class="form-control" id="locate" name="locate" value="profile.locate">
+                    </div>
+                    <div class="form-group mt-2 mb-2">
+                        <label for="description">User Description:</label>
+                        <textarea class="form-control" style="resize: none" name='description'
+                            id="description">{{profile.description}}</textarea>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary" style="float:right;">update</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancle</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 모달창 끝 -->
+<div class="container timeline-container">
+    <div class="row">
+        <!-- 왼쪽 컬럼: username, location, edit button -->
+
+        <!-- 오른 쪽 컬럼: description-->
+        <div class="col-md-3">
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <h3 class="mt-0">{{profile.username}}</h3>
+                                    <h5>Locate at</h5><span>{{profile.locate}}</span>
+                                    <hr>
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">
+                                        Edit Profile
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="mt-0">User's description</h4>
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body">
+                                            {{profile.description}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="container timeline-container">
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <hr>
+            <!-- 작성 된 글이 나오는 곳 -->
+            <div class="row">
+                {% for ps in posts %}
+                <div class="col-md-12 mb-2">
+                    <div class="card">
+                        <a class="text-dark text-decoration-none" href="/api/posts/{{ps.id}}">
+                            <div class="card-body">
+                                <h5 class="mt-0">{{ps.title}}</h5>
+                                <div class="media">
+                                    <div class="media-body">
+                                        {{ ps.content|slice:":3"}}...
+                                        <div style="text-align: right">
+                                            <span
+                                                style="font-size: small">작성일:{{ps.created_at}}-{{ ps.updated_at|timesince }}전
+                                                수정</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                {% if ps.author == user %}
+                                <div style="text-align: right">
+                                    <a href="/api/posts/delete/{{ ps.id }}">
+                                        <span class="badge rounded-pill bg-danger">삭제</span>
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                        </a>
+
+
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endblock %}

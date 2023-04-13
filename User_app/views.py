@@ -78,7 +78,7 @@ def sign_in_view(request) -> HttpResponse:
         return redirect('/')
 
 
-def profile_view(request, id: int) -> HttpResponse or HttpResponseRedirect:
+# def profile_view(request, id: int) -> HttpResponse or HttpResponseRedirect:
 
 @login_required
 def logout_view(request) -> HttpResponseRedirect:
@@ -89,7 +89,6 @@ def logout_view(request) -> HttpResponseRedirect:
 
 
 def profile_view(request, id: int) -> HttpResponse:
-
     '''
     모든 사용자가 프로필 페이지를 조회할 수 있습니다. 프로필과 프로필 소유자의 글 목록이 주어집니다.
     오직 프로필 소유자 일때만 프로필의 수정을 할 수 있습니다.
@@ -99,7 +98,7 @@ def profile_view(request, id: int) -> HttpResponse:
     if request.method == 'GET':
         # 역참조로 지정된 사용자의 글만 가져오기
         posts = opened_profile.username.posting_set.order_by('-created_at')
-        return render('', {'profile': opened_profile, 'posts': posts})
+        return render(request, 'User/profile.html', {'profile': opened_profile, 'posts': posts})
     if request.method == 'POST':
         if request.user != opened_profile.username:
             return redirect('/')
