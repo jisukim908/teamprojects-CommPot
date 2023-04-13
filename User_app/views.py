@@ -75,7 +75,7 @@ def sign_in_view(request) -> HttpResponse:
             return render(request, "user/signin.html", {'error': 'Invalid ID or PW.'})
         login(request, user)
 
-        return redirect('/')
+        return redirect('/api/posts')
 
 
 # def profile_view(request, id: int) -> HttpResponse or HttpResponseRedirect:
