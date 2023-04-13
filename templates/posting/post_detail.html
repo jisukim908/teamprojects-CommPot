@@ -24,8 +24,8 @@
                         <div class="card-body">
                             <div style="text-align: right">
                                 <p class="card-text">
-                                <h5 style="font-size: small">{{ posting.created_at }}</h5>
-                                <h5 style="font-size: small">{{ posting.created_at|timesince }}전</h5>
+                                    <h5 style="font-size: small">{{ posting.created_at }}</h5>
+                                    <h5 style="font-size: small">{{ posting.created_at|timesince }}전</h5>
                                 </p>
                                 {% if posting.author == user %}
                                 <!-- <form action="api/posts/{{int:id}}" method="post">
