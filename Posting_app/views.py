@@ -18,13 +18,13 @@ def post(request):
         # my_post.author = user
         my_post.content = request.POST.get('my-content', '')
         my_post.save()
-        return redirect('/post')
+        return redirect('api/posts')
         
 @login_required
 def delete_posting(request, id):
     my_post = Posting.objects.get(id=id)
     my_post.delete()
-    return redirect('/post')
+    return redirect('api/posts')
     # return HttpResponse('글 삭제 완료')
     
 @login_required
