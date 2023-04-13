@@ -47,7 +47,7 @@
             <!-- 글 작성 하는 곳 -->
             <form class="input-group mb-3" action="api/posts/comment/{{comment.id}}" method="post">
                 {% csrf_token %}
-                <input type="text" class="form-control" id='comment' name='comment' placeholder="댓글을 작성해 주세요" />
+                <input type="text" class="form-control" id='comment' name='comment' placeholder="댓글을 작성해주세요" />
                 <button class="btn btn-outline-secondary" type="submit">작성</button>
             </form>
             <hr>
