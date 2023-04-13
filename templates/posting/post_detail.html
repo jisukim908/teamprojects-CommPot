@@ -25,7 +25,8 @@
                             {% if posting.author == user %}
                             <div style="text-align: right">
                                 <p class="card-text">
-                                    <span style="font-size: small">{{ posting.created_at|timesince }}전</span>
+                                    <h5 style="font-size: small">{{ posting.created_at }}</h5>
+                                    <h5 style="font-size: small">{{ posting.created_at|timesince }}전</h5>
                                 </p>
                                 <a href="api/posts/{{int:id}}">
                                     <span class="badge rounded-pill bg-danger">수정</span>
