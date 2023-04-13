@@ -85,7 +85,7 @@ def logout_view(request) -> HttpResponseRedirect:
     '''로그인한 회원이 로그아웃'''
 
     logout(request)
-    return redirect('/')
+    return redirect('/api/posts')
 
 
 def profile_view(request, id: int) -> HttpResponse:
