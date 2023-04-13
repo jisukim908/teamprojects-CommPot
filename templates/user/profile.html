@@ -15,7 +15,7 @@
 
                     <div class="form-group mt-2 mb-2">
                         <label for="username">Region:</label>
-                        <input type="text" class="form-control" id="locate" name="locate" value="profile.locate">
+                        <input type="text" class="form-control" id="locate" name="locate" value="{{profile.locate}}">
                     </div>
                     <div class="form-group mt-2 mb-2">
                         <label for="description">User Description:</label>
@@ -50,10 +50,19 @@
                                     <h5>Locate at</h5><span>{{profile.locate}}</span>
                                     <hr>
                                     <!-- Button trigger modal -->
+                                    {% if profile.username == user %}
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#exampleModal">
                                         Edit Profile
                                     </button>
+                                    {% else %}
+                                    <a href="/api/user/login">
+                                        <button type="button" class="btn btn-primary">
+                                            Login to Edit
+                                        </button>
+                                    </a>
+                                    {% endif %}
+
 
                                 </div>
                             </div>
