@@ -7,35 +7,39 @@ from django.contrib.auth.decorators import login_required
 
     
     
-def post(request):
+def post_view(request):
     if request.method == 'GET':
         all_post = Posting.objects.all().order_by('-created_at')
-        return render(request, 'posting/post.html', {'posts':all_post})
-    
+        return render(request, 'posting/post.html', {'posts': all_post})
     elif request.method == 'POST':
+        user = request.user.is_authenticated
+        if not user:
+            return redirect('/api/user/login')
+
         # user = request.user
         my_post = Posting()
         # my_post.author = user
         my_post.content = request.POST.get('my-content', '')
         my_post.save()
-        return redirect('api/posts')
+        return redirect('/api/posts/')
         
 @login_required
-def delete_posting(request, id):
+def delete_posting_view(request, id):
     my_post = Posting.objects.get(id=id)
-    my_post.delete()
-    return redirect('api/posts')
+    if my_post.author == request.user:
+        my_post.delete()
+    return redirect('/api/posts')
     # return HttpResponse('글 삭제 완료')
     
-@login_required
-def posting_detail(request,id):
+
+def posting_detail_view(request, id):
     # 수정하기
     if request.method == 'POST':
         my_posting = Posting.objects.get(id=id)
         if request.user != my_posting.author:
-            return redirect('/api/posts/'+id)
-        title = request.POST.get("title","")
-        content = request.POST.get("content","")
+             return redirect('/api/posts/'+str(id))
+        title = request.POST.get("title", "")
+        content = request.POST.get("content", "")
         my_posting.title = title
         my_posting.content = content
         my_posting.save()
@@ -47,12 +51,14 @@ def posting_detail(request,id):
         #return render(request,'posting/posting_detail.html',{'posting':my_posting,'comment':posting_comment})
         return HttpResponse('업로드 완료')
 
-@login_required
-def write_comment(request,id):
+
+def write_comment_view(request,id):
     if request.method == 'POST':
         comment = request.POST.get("comment","")
         current_posting = Posting.objects.get(id=id)
-
+        user = request.user.is_authenticated
+        if not user:
+            return redirect('/api/user/login')
         PC = PostingComment()
         PC.comment = comment
         PC.author = request.user
@@ -64,11 +70,12 @@ def write_comment(request,id):
 
 
 @login_required
-def delete_comment(request,id):
+def delete_comment_view(request,id):
     comment = PostingComment.objects.get(id=id)
     current_posting = comment.posting.id
-    comment.delete()
+    if comment.author == request.user:
+        comment.delete()
 
-    #return redirect('/api/posts'+str(id))
+    # return redirect('/api/posts'+str(current_posting))
     return HttpResponse('댓글 삭제 완료')
 
