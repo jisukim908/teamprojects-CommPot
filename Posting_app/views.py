@@ -5,26 +5,40 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+def home(request):
+    user = request.user.is_authenticated
+    if user:
+        return redirect('/api/posts')
+    else:
+        return redirect('/api/sign-in')
     
     
-def post(request):
+    
+def posting_view(request):
     if request.method == 'GET':
-        all_post = Posting.objects.all().order_by('-created_at')
-        return render(request, 'posting/post.html', {'posts':all_post})
+        user = request.user.is_authenticated
+        
+        # if user:
+        #     all_post = Posting.objects.all().order_by('-created_at')
+        #     return render(request, 'posting/post.html', {'posts':all_post})
+        # else:
+        return redirect('/api/posts')
+       
+        
     
     elif request.method == 'POST':
-        # user = request.user
+        user = request.user
         my_post = Posting()
-        # my_post.author = user
+        my_post.author = user
         my_post.content = request.POST.get('my-content', '')
         my_post.save()
-        return redirect('/post')
+        return redirect('/api/posts')
         
 @login_required
 def delete_posting(request, id):
     my_post = Posting.objects.get(id=id)
     my_post.delete()
-    return redirect('/post')
+    return redirect('/posts')
     # return HttpResponse('글 삭제 완료')
     
 @login_required
@@ -48,7 +62,7 @@ def posting_detail(request):
         return HttpResponse('업로드 완료')
 
 @login_required
-def write_comment(request,id):
+def write_comment(request,id) -> HttpResponse or HttpResponseRedirect:
     if request.method == 'POST':
         comment = request.POST.get("comment","")
         current_posting = Posting.objects.get(id=id)

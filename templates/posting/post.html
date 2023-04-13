@@ -1,4 +1,5 @@
 <!-- templates/tweet/home.html -->
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -18,8 +19,14 @@
             </div>
             <!-- 오른 쪽 컬럼-->
             <div class="col-md-7">
+                <form action="" post="get">
+                    {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">글쓰기</button> {% endcomment %}
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                        글쓰기
+                    </button>
+                </form>
                 <!-- 글을 작성 하는 곳 -->
-                <div class="row mb-2">
+                {% comment %} <div class="row mb-2">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
@@ -39,7 +46,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
+
+                   
                 </div>
                 <hr>
                 <!-- 작성 된 글이 나오는 곳 -->
