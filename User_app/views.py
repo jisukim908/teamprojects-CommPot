@@ -78,7 +78,7 @@ def sign_in_view(request) -> HttpResponse:
         return redirect('/')
 
 
-def profile_view(request, id: int) -> HttpResponse or HttpResponseRedirect:
+# def profile_view(request, id: int) -> HttpResponse or HttpResponseRedirect:
 
 @login_required
 def logout_view(request) -> HttpResponseRedirect:
