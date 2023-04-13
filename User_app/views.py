@@ -75,7 +75,7 @@ def sign_in_view(request) -> HttpResponse:
             return render(request, "user/signin.html", {'error': 'Invalid ID or PW.'})
         login(request, user)
 
-        return redirect('/')
+        return redirect('/api/posts')
 
 
 # def profile_view(request, id: int) -> HttpResponse or HttpResponseRedirect:
@@ -85,7 +85,7 @@ def logout_view(request) -> HttpResponseRedirect:
     '''로그인한 회원이 로그아웃'''
 
     logout(request)
-    return redirect('/')
+    return redirect('/api/posts')
 
 
 def profile_view(request, id: int) -> HttpResponse:

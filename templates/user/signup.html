@@ -7,16 +7,15 @@
 <div class="container">
     <div class="wrap">
         <h2 class="title-center"> Sign_Up </h2>
-        <form class="form-area" method="post
-        " action="/sign-up">
+        <form class="form-area" method="post" action="/api/user/signup/">
             {% csrf_token %}
             <div class="form-group mt-2 mb-2">
                 <label for="username">ID :</label>
                 <input type="text" class="form-control" id="username" name="username">
             </div>
             <div class="form-group mt-2 mb-2">
-                <label for="bio">e-mail :</label>
-                <input type="text" class="form-control" id="bio" name="bio">
+                <label for="email">e-mail :</label>
+                <input type="text" class="form-control" id="email" name="email">
             </div>
             <div class="form-group mt-2 mb-2">
                 <label for="password">PW :</label>
@@ -26,16 +25,17 @@
                 <label for="password2">rewrite PW :</label>
                 <input type="password" class="form-control" id="password2" name="password2">
             </div>
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
             <hr>
             <div style="float: right">
-                <button type="button" class="btn btn-warning">sign up</button>
+                <button type="submit" class="btn btn-primary">sign up</button>
             </div>
+            <a href="/api/user/login/" class="btn btn-secondary">log in</a>
         </form>
-        </n>
-        <a href="/sign-in" class="btn btn-secondary">log in</a>
     </div>
-    </form>
-
-</div>
 </div>
 {% endblock %}
