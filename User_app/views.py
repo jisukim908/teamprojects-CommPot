@@ -89,7 +89,6 @@ def logout_view(request) -> HttpResponseRedirect:
 
 
 def profile_view(request, id: int) -> HttpResponse:
-
     '''
     모든 사용자가 프로필 페이지를 조회할 수 있습니다. 프로필과 프로필 소유자의 글 목록이 주어집니다.
     오직 프로필 소유자 일때만 프로필의 수정을 할 수 있습니다.
@@ -107,5 +106,7 @@ def profile_view(request, id: int) -> HttpResponse:
         description = request.POST.get('description', '')
         opened_profile.locate = locate
         opened_profile.description = description
+        for img in request.FILES.getlist('img'):
+            opened_profile.image = img
         opened_profile.save()
         return redirect('/api/profile/'+str(id))

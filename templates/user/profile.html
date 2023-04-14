@@ -10,7 +10,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Edit your Profile</h5>
             </div>
             <div class="modal-body">
-                <form class="form-area" method="post" action="/api/profile/{{profile.id}}">
+                <form class="form-area" method="post" action="/api/profile/{{profile.id}}" enctype="multipart/form-data">
                     {% csrf_token %}
 
                     <div class="form-group mt-2 mb-2">
@@ -21,6 +21,10 @@
                         <label for="description">User Description:</label>
                         <textarea class="form-control" style="resize: none" name='description'
                             id="description">{{profile.description}}</textarea>
+                    </div>
+                    <div class="form-group mt-2 mb-2">
+                        <label for="img">Profile image:</label>
+                        <input type="file" class="form-control" id="img" name="img">
                     </div>
 
 
@@ -46,6 +50,7 @@
                         <div class="card-body">
                             <div class="media">
                                 <div class="media-body">
+                                    <img src="{{profile.image.url}}" width="100"><br>
                                     <h3 class="mt-0">{{profile.username}}</h3>
                                     <h5>Locate at</h5><span>{{profile.locate}}</span>
                                     <hr>
