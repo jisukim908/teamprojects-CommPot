@@ -88,14 +88,13 @@ def logout_view(request) -> HttpResponseRedirect:
     return redirect('/api/posts')
 
 
-def profile_view(request, id: int) -> HttpResponse:
-
+def profile_view(request, path_username: str) -> HttpResponse:
     '''
     모든 사용자가 프로필 페이지를 조회할 수 있습니다. 프로필과 프로필 소유자의 글 목록이 주어집니다.
     오직 프로필 소유자 일때만 프로필의 수정을 할 수 있습니다.
     '''
     # 프로필 가져오기
-    opened_profile = Profile.objects.get(id=id)
+    opened_profile = Profile.objects.get(username=path_username)
     if request.method == 'GET':
         # 역참조로 지정된 사용자의 글만 가져오기
         posts = opened_profile.username.posting_set.order_by('-created_at')
@@ -108,4 +107,4 @@ def profile_view(request, id: int) -> HttpResponse:
         opened_profile.locate = locate
         opened_profile.description = description
         opened_profile.save()
-        return redirect('/api/profile/'+str(id))
+        return redirect('/api/profile/'+path_username)
