@@ -55,6 +55,9 @@ def sign_up_view(request) -> HttpResponse:
         try:
             new_user.set_password(input_dictionary['password'])
             new_user.save()
+            new_profile = Profile.objects.create(
+                username=new_user, description='')
+            new_profile.save()
         except:
             return render(request, "User/signup.html", {'error': 'Invalid PW. Too common or similar with your ID or e-mail'})
         return redirect('/api/user/login')
