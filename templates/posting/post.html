@@ -13,22 +13,25 @@
                         <h5 class="card-title">{{user.username}}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Logined</h6>
                         <p class="card-text">Welcome!</p>
+                        <button class="btn btn-primary" onclick="location.href='/api/profile/{{user.username}}'">My page</button>
                     {% else %}
                         <h5 class="card-title">You are not logined!</h5>
                         <a href="/api/user/login">
                             <button class="btn btn-primary">LOGIN</button>
                         </a>
                         
-                        <p class="card-text">don't have account? <a href="/api/user/signup">sign-up now!</a></p>
+                        <p class="card-text">don't have account? <br><a href="/api/user/signup">sign-up now!</a></p>
                     {%endif%}
                     </div>
                 </div>
             </div>
             <!-- 오른 쪽 컬럼-->
             <div class="col-md-7">
+                {% if user.is_authenticated %}
                     <button type="button" class="btn btn-primary" onclick="location.href='/api/posts/edit/0'">
                         글쓰기
                     </button>
+                {%endif%}
                 <hr>
                 <!-- 작성 된 글이 나오는 곳 -->
                 <div class="row">
@@ -38,13 +41,13 @@
                             <div class="card-body">
                                 {% if user == ps.author %}
                                 <div style="text-align: right">
-                                    <a href="/post/delete/{{ ps.id }}">
+                                    <a href="/api/posts/delete/{{ ps.id }}">
                                         <span class="badge rounded-pill bg-danger">삭제</span>
                                     </a>
                                 </div>
                                 {% endif %}
                                 <div style="text-align: right">
-                                    <a href="#">
+                                    <a href="/api/posts/{{ ps.id }}">
                                         <span class="badge rounded-pill bg-success">보기</span>
                                     </a>
                                 </div>
