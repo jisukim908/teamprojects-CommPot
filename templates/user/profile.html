@@ -10,11 +10,12 @@
                 <h5 class="modal-title" id="exampleModalLabel">Edit your Profile</h5>
             </div>
             <div class="modal-body">
-                <form class="form-area" method="post" action="/api/profile/{{profile.id}}" enctype="multipart/form-data">
+                <form class="form-area" method="post" action="/api/profile/{{profile.username}}" enctype="multipart/form-data">
+
                     {% csrf_token %}
 
                     <div class="form-group mt-2 mb-2">
-                        <label for="username">Region:</label>
+                        <label for="locate">Region:</label>
                         <input type="text" class="form-control" id="locate" name="locate" value="{{profile.locate}}">
                     </div>
                     <div class="form-group mt-2 mb-2">
