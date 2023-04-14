@@ -50,7 +50,9 @@
                         <div class="card-body">
                             <div class="media">
                                 <div class="media-body">
+                                    {% if profile.image.url %}
                                     <img src="{{profile.image.url}}" width="100"><br>
+                                    {%endif%}
                                     <h3 class="mt-0">{{profile.username}}</h3>
                                     <h5>Locate at</h5><span>{{profile.locate}}</span>
                                     <hr>
