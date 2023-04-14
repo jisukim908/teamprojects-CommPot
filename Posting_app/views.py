@@ -17,7 +17,7 @@ def home(request):
 def posting_view(request):
     if request.method == 'GET':
         user = request.user.is_authenticated
-        
+        return render(request, 'posting/post_write.html')
         # if user:
         #     all_post = Posting.objects.all().order_by('-created_at')
         #     return render(request, 'posting/post.html', {'posts':all_post})
@@ -25,6 +25,7 @@ def posting_view(request):
         return redirect('/api/posts')
        
         
+
     
     elif request.method == 'POST':
         user = request.user
@@ -62,7 +63,7 @@ def posting_detail(request):
         return HttpResponse('업로드 완료')
 
 @login_required
-def write_comment(request,id) -> HttpResponse or HttpResponseRedirect:
+def write_comment(request,id) -> HttpResponse:
     if request.method == 'POST':
         comment = request.POST.get("comment","")
         current_posting = Posting.objects.get(id=id)
