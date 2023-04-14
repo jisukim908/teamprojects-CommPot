@@ -111,5 +111,7 @@ def profile_view(request, path_username: str) -> HttpResponse:
         opened_profile.description = description
         for img in request.FILES.getlist('img'):
             opened_profile.image = img
+        if request.POST.get('default', False) == 'on':
+            opened_profile.image = None
         opened_profile.save()
         return redirect('/api/profile/'+path_username)
