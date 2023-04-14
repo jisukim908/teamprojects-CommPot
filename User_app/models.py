@@ -27,4 +27,4 @@ class Profile(models.Model):
     description = models.TextField(max_length=300, verbose_name='자기 소개')
     created_at = models.DateField(auto_now_add=True, verbose_name='프로필 생성일')
     updated_at = models.DateField(auto_now=True, verbose_name='프로필 수정일')
-    # profile_image=models.ImageField(,)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)

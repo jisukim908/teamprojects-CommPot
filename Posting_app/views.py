@@ -38,7 +38,6 @@ def post_view(request):
         return redirect('/api/posts/')
 
 
-
 @login_required
 def delete_posting_view(request, id):
     my_post = Posting.objects.get(id=id)
@@ -51,19 +50,20 @@ def delete_posting_view(request, id):
 
 def posting_detail_view(request, id):
     my_posting = Posting.objects.get(id=id)
-    posting_comment = PostingComment.objects.filter(posting_id = id)
-    return render(request,'posting/post_detail.html',{'posting':my_posting,'comment':posting_comment})
-   
+    posting_comment = PostingComment.objects.filter(posting_id=id)
+    return render(request, 'posting/post_detail.html', {'posting': my_posting, 'comment': posting_comment})
+
+
 @login_required
 def posting_edit_view(request, id):
     # 1. id가 0 인지 확인
-    if id==0:
-        my_posting=Posting()
-        my_posting.title=""
-        my_posting.content=""
-        my_posting.category="recipe"
-        my_posting.author=request.user
-    
+    if id == 0:
+        my_posting = Posting()
+        my_posting.title = ""
+        my_posting.content = ""
+        my_posting.category = "recipe"
+        my_posting.author = request.user
+
     # 2. id가 0 이면, 새로운 포스팅 모델 객체를 만들면 됩니다.
     # 3. 0이 아니라면, 바로 여기아래 있는 코드한줄이 실행되면 됩니다.
     else:
@@ -74,20 +74,20 @@ def posting_edit_view(request, id):
     if request.method == 'POST':
         title = request.POST.get("title", "")
         content = request.POST.get("content", "")
-        category=request.POST.get("category", "recipe")
+        category = request.POST.get("category", "recipe")
         my_posting.title = title
         my_posting.content = content
         # title, content 내용 없으면 다시 랜더링
-        if (title.strip() == "")or(content.strip()==""):
-            return render(request, 'posting/post_edit.html', {'posting':my_posting,'error':"please write title and content!"})
-        my_posting.category=category
+        if (title.strip() == "") or (content.strip() == ""):
+            return render(request, 'posting/post_edit.html', {'posting': my_posting, 'error': "please write title and content!"})
+        my_posting.category = category
         my_posting.save()
         return redirect('/api/posts/'+str(id)) if id else redirect('/api/posts')
     else:
-        return render(request, 'posting/post_edit.html', {'posting':my_posting})
+        return render(request, 'posting/post_edit.html', {'posting': my_posting})
 
 
-def write_comment_view(request,id:int) -> HttpResponse:
+def write_comment_view(request, id: int) -> HttpResponse:
     if request.method == 'POST':
         comment = request.POST.get("comment", "")
         current_posting = Posting.objects.get(id=id)
