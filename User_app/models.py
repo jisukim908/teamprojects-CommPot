@@ -24,7 +24,7 @@ class Profile(models.Model):
         get_user_model(), on_delete=models.CASCADE, to_field="username")
     locate = models.CharField(verbose_name='region',
                               max_length=16, default='Not specified')
-    description = models.TextField(max_length=300,)
-    created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateField(auto_now=True)
+    description = models.TextField(max_length=300, verbose_name='자기 소개')
+    created_at = models.DateField(auto_now_add=True, verbose_name='프로필 생성일')
+    updated_at = models.DateField(auto_now=True, verbose_name='프로필 수정일')
     # profile_image=models.ImageField(,)
