@@ -1,36 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'posting/base_profile.html' %}
 
 {% block title %}
-게시글 자세히보기
+{{ posting.title }}
 {% endblock %}
 
-{% block content %}
-<div class="container timeline-container">
-    <div class="row">
-        <!-- 왼쪽 컬럼 -->
-        <div class="col-md-3">
-            <div class="row mb-2">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="media">
-                                <div class="media-body">
-                                    <h3 class="mt-0">{{profile.username}}</h3>
-                                    <h5>Locate at</h5><span>{{profile.locate}}</span>
-                                    <hr>
-                                    <!-- Button trigger modal -->
-                                    <a href="/api/user/login">
-                                        <button type="button" class="btn btn-primary">
-                                            Login to Edit
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+{% block new_content %}
+
         <!-- 오른 쪽 컬럼-->
         <div class="col-md-9">
             <div class="row mb-2">
@@ -102,6 +77,5 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+
 {% endblock %}
