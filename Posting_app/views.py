@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from .models import Posting, PostingComment
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 # Create your views here.
 
 
@@ -19,7 +20,10 @@ def post_view(request):
                 category=category).order_by('-created_at')
         else:
             all_post = Posting.objects.all().order_by('-created_at')
-        return render(request, 'posting/post.html', {'posts': all_post})
+        page = int(request.GET.get('page','1'))
+        paginator = Paginator(all_post,5)
+        post_list = paginator.get_page(page)
+        return render(request, 'posting/post.html', {'post_list':post_list})
     elif request.method == 'POST':
         user = request.user.is_authenticated
         if not user:
