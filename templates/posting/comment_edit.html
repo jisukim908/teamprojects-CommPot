@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}
+댓글 수정하기
+{% endblock %}
+
+{% block content %}
+<div class="container timeline-container">
+    <div class="row">
+        <!-- 왼쪽 컬럼 -->
+        <div class="col-md-3">
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <h3 class="mt-0">{{profile.username}}</h3>
+                                    <h5>Locate at</h5><span>{{profile.locate}}</span>
+                                    <hr>
+                                    <!-- Button trigger modal -->
+                                    {% if profile.username == user %}
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal"> Edit Profile </button>
+                                    {% else %}
+                                    <a href="/api/user/login">
+                                        <button type="button" class="btn btn-primary">
+                                            Login to Edit
+                                        </button>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--글수정하는 곳-->
+        <div class="col-md-9">
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <form class="input-group mb-3" action="/api/posts/comment/modify/{{comment.id}}"
+                                        method="post">
+                                        {% csrf_token %}
+                                        <div class="container timeline-container">
+                                            <h5 class="mt-0" type="text" name="author">Author: {{comment.author}}</h5>
+                                            <br>
+                                            {% if error %}
+                                            <div class="alert alert-danger" role="alert">{{ error }}</div>
+                                            {% endif %}
+                                            <label for="comment">Comment</label>
+                                            <textarea class="form-control" style="resize: none"
+                                                name="comment">{{ comment.comment }}</textarea><br>
+                                            <button class="btn btn-primary" type="submit">Save changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

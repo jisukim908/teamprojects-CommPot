@@ -57,7 +57,8 @@
                                     </div>
                                     <div class="media">
                                         <div class="media-bod">
-                                            <pre class="mt-0 text-wrap" style='font-size: large'>{{ posting.content|linebreaks}}</pre>
+                                            <pre class="mt-0 text-wrap"
+                                                style='font-size: large'>{{ posting.content|linebreaks}}</pre>
                                         </div>
                                     </div>
                                 </div>
@@ -82,12 +83,15 @@
                                 </div>
                                 <div style="float: right">
                                     <span style="font-size: small">
-                                        {{ cm.author }} - {{ cm.created_at | timesince }}전
+                                        {{ cm.author }} - {{ cm.updated_at | timesince }}전
                                     </span>
                                 </div>
                                 <br>
                                 {% if cm.author == user %}
                                 <div style=" float: right">
+                                    <a href="/api/posts/comment/modify/{{cm.id}}">
+                                        <span class="badge bg-danger">수정</span>
+                                    </a>
                                     <a href="/api/posts/comment/delete/{{cm.id}}">
                                         <span class="badge bg-danger">삭제</span>
                                     </a>
