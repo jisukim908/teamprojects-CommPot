@@ -12,6 +12,8 @@ urlpatterns = [
          views.delete_posting_view, name='delete-posting'),
     path('api/posts/comment/<int:id>',
          views.write_comment_view, name='write-comment'),
+    path('api/posts/comment/modify/<int:id>',
+         views.comment_modify_view, name='modify-comment'),
     path('api/posts/comment/delete/<int:id>',
          views.delete_comment_view, name='delete-comment'),
 

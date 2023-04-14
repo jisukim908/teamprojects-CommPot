@@ -63,6 +63,9 @@
                                 <br>
                                 {% if cm.author == user %}
                                 <div style=" float: right">
+                                    <a href="/api/posts/comment/modify/{{cm.id}}">
+                                        <span class="badge bg-danger">수정</span>
+                                    </a>
                                     <a href="/api/posts/comment/delete/{{cm.id}}">
                                         <span class="badge bg-danger">삭제</span>
                                     </a>

@@ -12,7 +12,7 @@
     <hr>
     <!-- 작성 된 글이 나오는 곳 -->
     <div class="row">
-        {% for ps in posts %}
+        {% for ps in post_list %}
         <div class="col-md-12 mb-2">
             <div class="card">
                 <div class="card-body">
@@ -40,7 +40,35 @@
                 </div>
             </div>
         </div>
-    {% endfor %}
+        {% endfor %}
+        <!--페이지네이션 시작-->
+        <div style="text-align:center">
+            <ul class="pagination">
+                <div style="width:35%; margin: 5px;">
+                    {% if post_list.has_previous %}
+                        <a class="abutton" href="?page=1">맨 앞으로</a>
+                        <a class="abutton" href="?page={{ post_list.previous_page_number }}">이전</a>
+                    {% endif %}
+                </div>
+                <div style="width:30%; margin: 5px;">
+                    {% for page in post_list.paginator.page_range %}
+                        {% if page >= post_list.number|add:-2 and page <= post_list.number|add:2 %}
+                        <span class="{% if page == post_list.number %}current{% endif %}">
+                            <a href="?page={{ page }}">{{ page}}</a>
+                        </span>
+                        {% elif page >= post_list.number|add:-3 and page <= post_list.number|add:3 %}
+                            ..
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div style="width:35%; margin: 5px;">
+                    {% if post_list.has_next %}
+                        <a class="abutton" href="?page={{ post_list.next_page_number }}">다음</a>
+                        <a class="abutton" href="?page={{ post_list.paginator.num_pages }}">맨 뒤로</a>
+                    {% endif %}
+                </div>
+            </ul>
+        </div>
     </div>
 </div>
 {% endblock %}

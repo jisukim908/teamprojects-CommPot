@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from .models import Posting, PostingComment
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 # Create your views here.
 
 
@@ -19,7 +20,10 @@ def post_view(request):
                 category=category).order_by('-created_at')
         else:
             all_post = Posting.objects.all().order_by('-created_at')
-        return render(request, 'posting/post.html', {'posts': all_post})
+        page = int(request.GET.get('page','1'))
+        paginator = Paginator(all_post,5)
+        post_list = paginator.get_page(page)
+        return render(request, 'posting/post.html', {'post_list':post_list})
     elif request.method == 'POST':
         user = request.user.is_authenticated
         if not user:
@@ -98,6 +102,19 @@ def write_comment_view(request,id:int) -> HttpResponse:
 
         return redirect('/api/posts/'+str(id))
 
+@login_required
+def comment_modify_view(request, id):
+    comment = PostingComment.objects.get(id=id)
+    current_posting = comment.posting.id
+    if request.method == 'POST':
+        my_comment = request.POST.get("comment", "")
+        if (my_comment.strip() == ""):
+            return render(request, 'posting/comment_edit.html', {'comment':comment, 'error':"please write comment!"})
+        comment.comment = my_comment
+        comment.save()
+        return redirect('/api/posts/'+str(current_posting))
+    else:
+        return render(request, 'posting/comment_edit.html', {'comment':comment})
 
 @login_required
 def delete_comment_view(request, id):
