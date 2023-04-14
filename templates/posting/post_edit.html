@@ -44,8 +44,12 @@
                         <div class="card-body">
                             <div class="media">
                                 <div class="media-body">
-                                    <form class="input-group mb-3" action="/api/posts/edit/{{posting.id}}"
-                                        method="post">
+                                    {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+                                    {% if posting.id %}
+                                    <form class="input-group mb-3" action="/api/posts/edit/{{posting.id}}" method="post">
+                                    {% else %}
+                                    <form class="input-group mb-3" action="/api/posts/edit/0" method="post">
+                                    {% endif %}
                                         {% csrf_token %}
                                         <div class="container timeline-container">
                                             <h5 class="mt-0" type="text" name="author">Author: {{posting.author}}</h5>
@@ -54,10 +58,18 @@
                                             <input class="input_field" type="text" name="title"
                                                 value="{{ posting.title }}"><br>
                                             <br>
+                                            <label for="category">Category:</label>
+                                            <select class="form-select" aria-label="Default select example" name="category">
+                                                <option selected value="{{posting.category}}">{{posting.category}}</option>
+                                                <option value="recipe">recipe</option>
+                                                <option value="recommend">recommend</option>
+                                                <option value="chat">chat</option>
+                                            </select>
+
                                             <label for="content">Content:</label><br>
                                             <textarea class="form-control" style="resize: none"
-                                                name="content">{{ posting.content }}</textarea><br>
-                                            <button class="btn btn-primary" type="submit">Save changes</button>
+                                                name="content" rows="18">{{ posting.content }}</textarea><br>
+                                            <button class="btn btn-primary" type="submit">Save</button>
                                         </div>
                                     </form>
                                 </div>
