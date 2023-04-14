@@ -102,6 +102,19 @@ def write_comment_view(request,id:int) -> HttpResponse:
 
         return redirect('/api/posts/'+str(id))
 
+@login_required
+def comment_modify_view(request, id):
+    comment = PostingComment.objects.get(id=id)
+    current_posting = comment.posting.id
+    if request.method == 'POST':
+        my_comment = request.POST.get("comment", "")
+        if (my_comment.strip() == ""):
+            return render(request, 'posting/comment_edit.html', {'comment':comment, 'error':"please write comment!"})
+        comment.comment = my_comment
+        comment.save()
+        return redirect('/api/posts/'+str(current_posting))
+    else:
+        return render(request, 'posting/comment_edit.html', {'comment':comment})
 
 @login_required
 def delete_comment_view(request, id):

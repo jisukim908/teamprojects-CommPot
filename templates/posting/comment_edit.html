@@ -1,0 +1,41 @@
+{% extends 'posting/base_profile.html' %}
+
+{% block title %}
+댓글 수정하기
+{% endblock %}
+
+{% block new_content %}
+
+        <!--글수정하는 곳-->
+        <div class="col-md-9">
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <form class="input-group mb-3" action="/api/posts/comment/modify/{{comment.id}}"
+                                        method="post">
+                                        {% csrf_token %}
+                                        <div class="container timeline-container">
+                                            <h5 class="mt-0" type="text" name="author">Author: {{comment.author}}</h5>
+                                            <br>
+                                            {% if error %}
+                                            <div class="alert alert-danger" role="alert">{{ error }}</div>
+                                            {% endif %}
+                                            <label for="comment">Comment</label>
+                                            <textarea class="form-control" style="resize: none"
+                                                name="comment">{{ comment.comment }}</textarea><br>
+                                            <button class="btn btn-primary" type="submit">Save changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
