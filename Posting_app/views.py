@@ -33,23 +33,23 @@ def delete_posting_view(request, id):
     
 
 def posting_detail_view(request, id):
-    # 수정하기
+    my_posting = Posting.objects.get(id=id)
+    posting_comment = PostingComment.objects.filter(posting_id = id)
+    return render(request,'posting/post_detail.html',{'posting':my_posting,'comment':posting_comment})
+   
+
+def posting_edit_view(request, id):
+    my_posting = Posting.objects.get(id=id)
     if request.method == 'POST':
-        my_posting = Posting.objects.get(id=id)
-        if request.user != my_posting.author:
-             return redirect('/api/posts/'+str(id))
         title = request.POST.get("title", "")
         content = request.POST.get("content", "")
         my_posting.title = title
         my_posting.content = content
         my_posting.save()
-        #return redirect('/api/posts/'+str(id))
-        return HttpResponse('수정완료')
-    elif request.method == 'GET':
+        return redirect('/api/posts/'+str(id))
+    else:
         my_posting = Posting.objects.get(id=id)
-        posting_comment = PostingComment.objects.filter(posting_id = id)
-        #return render(request,'posting/posting_detail.html',{'posting':my_posting,'comment':posting_comment})
-        return HttpResponse('업로드 완료')
+        return render(request, 'posting/post_edit.html', {'posting':my_posting})
 
 
 def write_comment_view(request,id):
@@ -64,9 +64,7 @@ def write_comment_view(request,id):
         PC.author = request.user
         PC.posting =  current_posting
         PC.save()
-
-        #return redirect('/api/posts'+str(id))
-        return HttpResponse('댓글 저장 완료')
+        return redirect('/api/posts/'+str(id))
 
 
 @login_required
@@ -76,6 +74,5 @@ def delete_comment_view(request,id):
     if comment.author == request.user:
         comment.delete()
 
-    # return redirect('/api/posts'+str(current_posting))
-    return HttpResponse('댓글 삭제 완료')
+    return redirect('/api/posts/'+str(current_posting))
 
