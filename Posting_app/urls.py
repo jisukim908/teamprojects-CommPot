@@ -13,4 +13,5 @@ urlpatterns = [
          views.write_comment_view, name='write-comment'),
     path('api/posts/comment/delete/<int:id>',
          views.delete_comment_view, name='delete-comment'),
+
 ]

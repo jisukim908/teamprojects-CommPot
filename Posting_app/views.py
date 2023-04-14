@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
+def home(request):
+    return redirect('/api/posts')
+
+
 def post_view(request):
     if request.method == 'GET':
         category = request.GET.get('category', '')
@@ -22,11 +26,13 @@ def post_view(request):
             return redirect('/api/user/login')
 
         # user = request.user
+
         my_post = Posting()
-        # my_post.author = user
+        my_post.author = user
         my_post.content = request.POST.get('my-content', '')
         my_post.save()
         return redirect('/api/posts/')
+
 
 
 @login_required
@@ -35,6 +41,7 @@ def delete_posting_view(request, id):
     if my_post.author == request.user:
         my_post.delete()
     return redirect('/api/posts')
+
     # return HttpResponse('글 삭제 완료')
 
 
@@ -62,8 +69,7 @@ def posting_edit_view(request, id):
         return render(request, 'posting/post_edit.html', {'posting':my_posting})
 
 
-
-def write_comment_view(request, id):
+def write_comment(request,id:int) -> HttpResponse:
     if request.method == 'POST':
         comment = request.POST.get("comment", "")
         current_posting = Posting.objects.get(id=id)
