@@ -1,0 +1,72 @@
+<!-- templates/tweet/home.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container timeline-container">
+        <div class="row">
+            <!-- 왼쪽 컬럼 -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                    {% if user.is_authenticated %}
+                        <h5 class="card-title">{{user.username}}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Logined</h6>
+                        <p class="card-text">Welcome!</p>
+                        <button class="btn btn-primary" onclick="location.href='/api/profile/{{user.username}}'">My page</button>
+                    {% else %}
+                        <h5 class="card-title">You are not logined!</h5>
+                        <a href="/api/user/login">
+                            <button class="btn btn-primary">LOGIN</button>
+                        </a>
+                        
+                        <p class="card-text">don't have account? <br><a href="/api/user/signup">sign-up now!</a></p>
+                    {%endif%}
+                    </div>
+                </div>
+            </div>
+            <!-- 오른 쪽 컬럼-->
+            <div class="col-md-7">
+                {% if user.is_authenticated %}
+                    <button type="button" class="btn btn-primary" onclick="location.href='/api/posts/edit/0'">
+                        글쓰기
+                    </button>
+                {%endif%}
+                <hr>
+                <!-- 작성 된 글이 나오는 곳 -->
+                <div class="row">
+                    {% for ps in posts %}
+                    <div class="col-md-12 mb-2">
+                        <div class="card">
+                            <div class="card-body">
+                                {% if user == ps.author %}
+                                <div style="text-align: right">
+                                    <a href="/api/posts/delete/{{ ps.id }}">
+                                        <span class="badge rounded-pill bg-danger">삭제</span>
+                                    </a>
+                                </div>
+                                {% endif %}
+                                <div style="text-align: right">
+                                    <a href="/api/posts/{{ ps.id }}">
+                                        <span class="badge rounded-pill bg-success">보기</span>
+                                    </a>
+                                </div>
+                                <div class="media">
+                                    <div class="media-body">
+                                        <h5 class="mt-0">{{ ps.title }}</h5>
+                                        <p>{{ ps.content|slice:":15"}}...</p>
+                                    </div>
+                                    <div style="text-align: right">
+                                        <span style="font-size: small">{{ ps.author.username }}-{{ ps.created_at|timesince }} 전</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+{% endblock %}
