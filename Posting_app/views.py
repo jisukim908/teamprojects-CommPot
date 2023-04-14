@@ -69,7 +69,7 @@ def posting_edit_view(request, id):
         return render(request, 'posting/post_edit.html', {'posting':my_posting})
 
 
-def write_comment(request,id:int) -> HttpResponse:
+def write_comment_view(request,id:int) -> HttpResponse:
     if request.method == 'POST':
         comment = request.POST.get("comment", "")
         current_posting = Posting.objects.get(id=id)
