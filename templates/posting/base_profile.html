@@ -35,27 +35,21 @@
                     </div>
                 </div>
                 {% if user.is_authenticated %}
-                <div class="card">
-                    <div class="card-body">
-                        <h5>You're Subscribing...</h5>
-                    <ul>
-                        
-                        {% for fl in user.follow.all %}
-                        <a href="/api/profile/{{fl.username}}">
-                            <li>
-                                {{fl.username}}
-                            </li>
-                        </a>
-                                
-                        {% endfor %}
-                    </ul>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>You're Subscribing...</h5>
+                            <ul>
+                                {% for fl in user.follow.all %}
+                                    <a href="/api/profile/{{ fl.username }}">
+                                        <li>{{ fl.username }}</li>
+                                    </a>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
                 {% endif %}
             </div>
             {% comment %}<!-- 왼쪽 컬럼 -->, 팔로우 유저 표시  {% endcomment %}
-
-
             <!-- 오른 쪽 컬럼-->
             {% block new_content %}{% endblock %}
         </div>
