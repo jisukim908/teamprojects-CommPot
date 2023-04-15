@@ -21,6 +21,8 @@ def sign_up_view(request) -> HttpResponse:
     """
     username_regex = '^[A-Za-z][A-Za-z0-9_]{7,29}$'
     if request.method == "GET":  # GET 메서드로 요청이 들어 올 경우
+        if request.user.is_authenticated:
+            return redirect('/')
         return render(request, "User/signup.html")
     elif request.method == "POST":  # POST 메서드로 요청이 들어 올 경우
         input_dictionary = {
@@ -67,6 +69,8 @@ def sign_up_view(request) -> HttpResponse:
 def sign_in_view(request) -> HttpResponse:
     """username과 password를 받아 로그인"""
     if request.method == 'GET':
+        if request.user.is_authenticated:
+            return redirect('/')
         return render(request, "user/signin.html")
     elif request.method == 'POST':
         username = request.POST.get('username', '')

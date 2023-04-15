@@ -14,16 +14,21 @@ def home(request):
 def post_view(request):
     if request.method == 'GET':
         category = request.GET.get('category', '')
+        subscribe = request.GET.get('subscribed', '')
         all_post = []
         if category:
+            all_post = Posting.objects.filter(category=category)
+        elif subscribe:
             all_post = Posting.objects.filter(
-                category=category).order_by('-created_at')
+                author__in=request.user.follow.all())
+            pass
         else:
-            all_post = Posting.objects.all().order_by('-created_at')
-        page = int(request.GET.get('page','1'))
-        paginator = Paginator(all_post,5)
+            all_post = Posting.objects.all()
+        all_post = all_post.order_by('-created_at')
+        page = int(request.GET.get('page', '1'))
+        paginator = Paginator(all_post, 5)
         post_list = paginator.get_page(page)
-        return render(request, 'posting/post.html', {'post_list':post_list})
+        return render(request, 'posting/post.html', {'post_list': post_list})
     elif request.method == 'POST':
         user = request.user.is_authenticated
         if not user:
@@ -43,7 +48,9 @@ def delete_posting_view(request, id):
     my_post = Posting.objects.get(id=id)
     if my_post.author == request.user:
         my_post.delete()
-    return redirect('/api/posts')
+    go_to = request.GET.get('from', '/')
+    print(go_to)
+    return redirect(go_to)
 
     # return HttpResponse('글 삭제 완료')
 
@@ -102,6 +109,7 @@ def write_comment_view(request, id: int) -> HttpResponse:
 
         return redirect('/api/posts/'+str(id))
 
+
 @login_required
 def comment_modify_view(request, id):
     comment = PostingComment.objects.get(id=id)
@@ -109,12 +117,13 @@ def comment_modify_view(request, id):
     if request.method == 'POST':
         my_comment = request.POST.get("comment", "")
         if (my_comment.strip() == ""):
-            return render(request, 'posting/comment_edit.html', {'comment':comment, 'error':"please write comment!"})
+            return render(request, 'posting/comment_edit.html', {'comment': comment, 'error': "please write comment!"})
         comment.comment = my_comment
         comment.save()
         return redirect('/api/posts/'+str(current_posting))
     else:
-        return render(request, 'posting/comment_edit.html', {'comment':comment})
+        return render(request, 'posting/comment_edit.html', {'comment': comment})
+
 
 @login_required
 def delete_comment_view(request, id):

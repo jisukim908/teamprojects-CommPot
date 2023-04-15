@@ -87,7 +87,49 @@
                                     {% endif %}
                                     {% endif %}
                                     {% endif %}
+                                    <h6 class="card-subtitle mt-2 text-muted">Subscribers: {{ profile.username.followee.count }}</h6>
+                                    <h6 class="card-subtitle mt-2 text-muted">Subscribing: {{ profile.username.follow.count }}</h6>
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <h5>{{profile.username}} subscribes...</h5>
+                                    
+                                        {% if profile.username.follow.count == 0 %}
+                                        <li>
+                                            No one.
+                                        </li>
+                                        {% else %}
+                                            {% for fl in profile.username.follow.all %}
+                                            <a href="/api/profile/{{fl.username}}">
+                                                <li>
+                                                    {{fl.username}}
+                                                </li>
+                                            </a>
+                                                    
+                                            {% endfor %}
+                                        {% endif %}
+                                    
+                                    <h5>and subscribed by...</h5>
+                                    {% if profile.username.followee.count == 0 %}
+                                    <li>
+                                        No one.
+                                    </li>
+                                        {% else %}
+                                            {% for fl in profile.username.followee.all %}
+                                            <a href="/api/profile/{{fl.username}}">
+                                                <li>
+                                                    {{fl.username}}
+                                                </li>
+                                            </a>
+                                                    
+                                            {% endfor %}
+                                        {% endif %}
 
                                 </div>
                             </div>
@@ -117,19 +159,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-</div>
-<div class="container timeline-container">
-    <div class="row">
-
-        <div class="col-md-12">
-
-            <hr>
-            <!-- 작성 된 글이 나오는 곳 -->
-            <div class="row">
-                {% for ps in posts %}
+            <h4> <br>{{profile.username}}'s Posts</h4>
+            {% for ps in posts %}
                 <div class="col-md-12 mb-2">
                     <div class="card">
                         <a class="text-dark text-decoration-none" href="/api/posts/{{ps.id}}">
@@ -149,7 +180,7 @@
 
                                 {% if ps.author == user %}
                                 <div style="text-align: right">
-                                    <a href="/api/posts/delete/{{ ps.id }}">
+                                    <a href="/api/posts/delete/{{ ps.id }}?from=/api/profile/{{profile.username}}">
                                         <span class="badge rounded-pill bg-danger">삭제</span>
                                     </a>
                                 </div>
@@ -162,4 +193,10 @@
                     </div>
                     {% endfor %}
                 </div>
+
+        </div>
+    </div>
+
+</div>
+
                 {% endblock %}

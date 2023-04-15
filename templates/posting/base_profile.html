@@ -6,7 +6,7 @@
             <!-- 왼쪽 컬럼 -->
             <div class="col-md-3">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" style="text-align: center;">
                         {% if user.is_authenticated %}
                             {% if user.profile.image %}
                                 <img src="{{ user.profile.image.url }}" width="100">
@@ -16,8 +16,9 @@
                                 <br>
                             {% endif %}
                             <h5 class="card-title">{{ user.username }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Logined</h6>
                             <p class="card-text">Welcome!</p>
+                            <h6 class="card-subtitle mb-2 text-muted">Subscribers: {{ user.followee.count }}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">Subscribing: {{ user.follow.count }}</h6>
                             <button class="btn btn-primary"
                                     onclick="location.href='/api/profile/{{ user.username }}'">My page</button>
                         {% else %}
@@ -33,7 +34,28 @@
                         {% endif %}
                     </div>
                 </div>
+                {% if user.is_authenticated %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5>You're Subscribing...</h5>
+                    <ul>
+                        
+                        {% for fl in user.follow.all %}
+                        <a href="/api/profile/{{fl.username}}">
+                            <li>
+                                {{fl.username}}
+                            </li>
+                        </a>
+                                
+                        {% endfor %}
+                    </ul>
+                    </div>
+                </div>
+                {% endif %}
             </div>
+            {% comment %}<!-- 왼쪽 컬럼 -->, 팔로우 유저 표시  {% endcomment %}
+
+
             <!-- 오른 쪽 컬럼-->
             {% block new_content %}{% endblock %}
         </div>
