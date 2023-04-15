@@ -17,7 +17,15 @@
                                     <h4 class="card-title">{{ posting.title }}</h4>
                                     <div style="text-align: right">
                                         <p class="card-text">
-                                        <h5 class="card-title">{{posting.author}}</h5>
+                                        <h5 class="card-title"><a href="/api/profile/{{posting.author.username}}">{{posting.author}}</a> 
+                                            {% if user.is_authenticated and user != posting.author %}
+                                            {% if posting.author in user.follow.all %}
+                                            <button class='btn btn-success' onclick="location.href='/api/user/follow/{{posting.author}}?from='+window.location.href">Subscribing</button>
+                                            {% else %}
+                                            <button class='btn btn-secondary' onclick="location.href='/api/user/follow/{{posting.author}}?from='+window.location.href">Subscribe</button>
+                                            {% endif %}
+                                            {% endif %}
+                                        </h5>
                                         <h5 style="font-size: small">{{ posting.created_at }}</h5>
                                         <h5 style="font-size: small">{{ posting.updated_at|timesince }}전</h5>
                                         </p>
@@ -57,7 +65,7 @@
                                 </div>
                                 <div style="float: right">
                                     <span style="font-size: small">
-                                        {{ cm.author }} - {{ cm.created_at | timesince }}전
+                                        <a href="/api/profile/{{ cm.author.username }}">{{ cm.author }}</a> - {{ cm.created_at | timesince }}전
                                     </span>
                                 </div>
                                 <br>
