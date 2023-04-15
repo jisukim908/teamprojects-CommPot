@@ -1,6 +1,6 @@
 
 from django.shortcuts import render, redirect
-from .models import Posting, PostingComment
+from .models import Posting, PostingComment, PostingImage
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -63,6 +63,7 @@ def posting_detail_view(request, id):
 
 @login_required
 def posting_edit_view(request, id):
+    print(request.FILES)
     # 1. id가 0 인지 확인
     if id == 0:
         my_posting = Posting()
@@ -88,6 +89,23 @@ def posting_edit_view(request, id):
         if (title.strip() == "") or (content.strip() == ""):
             return render(request, 'posting/post_edit.html', {'posting': my_posting, 'error': "please write title and content!"})
         my_posting.category = category
+        my_posting.save()
+        my_posting = Posting.objects.last()
+        for post_image in my_posting.embed.all():
+            delete_check = request.POST.get(str(post_image.id), '')
+            if delete_check == 'on':
+                post_image.image.delete(save=False)
+                post_image.delete()
+
+        for img in request.FILES.getlist('images'):
+            print(my_posting.title, img)
+            photo = PostingImage()
+            # 외래키로 현재 생성한 Post의 기본키를 참조한다.
+            photo.posting = my_posting
+            # imgs로부터 가져온 이미지 파일 하나를 저장한다.
+            photo.image = img
+            # 데이터베이스에 저장
+            photo.save()
         my_posting.save()
         return redirect('/api/posts/'+str(id)) if id else redirect('/api/posts')
     else:
