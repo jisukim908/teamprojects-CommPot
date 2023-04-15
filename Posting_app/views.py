@@ -18,7 +18,7 @@ def post_view(request):
         all_post = []
         if category:
             all_post = Posting.objects.filter(category=category)
-        elif subscribe:
+        elif subscribe == 'only':
             all_post = Posting.objects.filter(
                 author__in=request.user.follow.all())
             pass
