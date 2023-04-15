@@ -10,7 +10,7 @@
                         <div class="media">
                             <div class="media-body">
                                 {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
-                                {% if posting.id %}
+                                    {% if posting.id %}
                                     <form class="input-group mb-3"
                                           action="/api/posts/edit/{{ posting.id }}"
                                           method="post">
