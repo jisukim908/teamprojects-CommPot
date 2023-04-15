@@ -12,36 +12,36 @@ def home(request):
 
 
 def post_view(request):
+    category = request.GET.get('category', '')
+    subscribe = request.GET.get('subscribed', '')
+    all_post = []
+    if category:
+        all_post = Posting.objects.filter(category=category)
+    elif subscribe == 'only':
+        all_post = Posting.objects.filter(
+            author__in=request.user.follow.all())
+        pass
+    else:
+        all_post = Posting.objects.all()
+    all_post = all_post.order_by('-created_at')
+    page = int(request.GET.get('page', '1'))
+    paginator = Paginator(all_post, 5)
+    post_list = paginator.get_page(page)
+    return render(request, 'posting/post.html', {'post_list': post_list})
+    
+def search(request):
     if request.method == 'GET':
-        category = request.GET.get('category', '')
-        subscribe = request.GET.get('subscribed', '')
-        all_post = []
-        if category:
-            all_post = Posting.objects.filter(category=category)
-        elif subscribe == 'only':
-            all_post = Posting.objects.filter(
-                author__in=request.user.follow.all())
-            pass
-        else:
-            all_post = Posting.objects.all()
-        all_post = all_post.order_by('-created_at')
-        page = int(request.GET.get('page', '1'))
-        paginator = Paginator(all_post, 5)
+        searched = request.GET.get("searched","")     
+        posts = Posting.objects.filter(content__contains=searched).order_by('-created_at')
+        if posts.exists() == False:
+            return render(request, 'posting/searched.html', {'searched': searched, 'error': "찾으시는 검색어를 가진 글은 존재하지 않습니다."}) 
+        count = posts.count()
+        page = int(request.GET.get('page','1'))
+        paginator = Paginator(posts,5)
         post_list = paginator.get_page(page)
-        return render(request, 'posting/post.html', {'post_list': post_list})
-    elif request.method == 'POST':
-        user = request.user.is_authenticated
-        if not user:
-            return redirect('/api/user/login')
-
-        # user = request.user
-
-        my_post = Posting()
-        my_post.author = user
-        my_post.content = request.POST.get('my-content', '')
-        my_post.save()
-        return redirect('/api/posts/')
-
+        return render(request, 'posting/searched.html', {'searched': searched, "post_list": post_list, 'count':count})
+    else:
+        return render(request, 'posting/searched.html', {})
 
 @login_required
 def delete_posting_view(request, id):
@@ -132,3 +132,4 @@ def delete_comment_view(request, id):
     if comment.author == request.user:
         comment.delete()
     return redirect('/api/posts/'+str(current_posting))
+
