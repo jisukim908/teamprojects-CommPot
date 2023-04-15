@@ -120,3 +120,16 @@ def profile_view(request, path_username: str) -> HttpResponse:
                 opened_profile.image = None
         opened_profile.save()
         return redirect('/api/profile/'+path_username)
+
+
+@login_required
+def user_follow_view(request, path_username):
+    me = request.user
+    click_user = UserModel.objects.get(username=path_username)
+    if me in click_user.followee.all():
+        print('unfollow')
+        click_user.followee.remove(request.user)
+    else:
+        print('follow')
+        click_user.followee.add(request.user)
+    return HttpResponseRedirect(request.GET.get('from', '/'))
