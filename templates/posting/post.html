@@ -29,13 +29,21 @@
                                 </a>
                             </div>
                             <div class="media">
+                                {% if ps.embed.first %}
+                                    <img src='{{ ps.embed.first.image.url }}'
+                                         class='align-self-center float-left mr-3 img-thumbnail'
+                                         style='width:200px'>
+                                {% else %}
+                                    <div style='width:200px;height: 120px;text-align: center; background-color:gray;color:white;line-height:120px;'>No Image</div>
+                                {% endif %}
                                 <div class="media-body">
                                     <h5 class="mt-0">{{ ps.title }}</h5>
-                                    <p>{{ ps.content|slice:":15" }}...</p>
+                                    <p>{{ ps.content|slice:":15" }}{% if ps.content|slice:":15" != ps.content %}...{%endif%}</p>
+                                    <p style="text-align: right">
+                                        <span style="font-size: small">{{ ps.author.username }}-{{ ps.created_at|timesince }} 전</span>
+                                    </p>
                                 </div>
-                                <div style="text-align: right">
-                                    <span style="font-size: small">{{ ps.author.username }}-{{ ps.created_at|timesince }} 전</span>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>

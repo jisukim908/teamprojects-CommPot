@@ -90,7 +90,6 @@ def posting_edit_view(request, id):
             return render(request, 'posting/post_edit.html', {'posting': my_posting, 'error': "please write title and content!"})
         my_posting.category = category
         my_posting.save()
-        my_posting = Posting.objects.last()
         for post_image in my_posting.embed.all():
             delete_check = request.POST.get(str(post_image.id), '')
             if delete_check == 'on':
