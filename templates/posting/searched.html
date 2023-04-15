@@ -1,0 +1,83 @@
+{% extends 'posting/base_profile.html' %}
+{%block title %} 검색결과 {% endblock %}
+
+{% block new_content %}
+<div class="col-md-7">
+    {% if user.is_authenticated %}
+        <button type="button" class="btn btn-primary" onclick="location.href='/api/posts/edit/0'">
+            글쓰기
+        </button>
+    {%endif%}
+    <hr>
+    <div class="row">
+        {% if searched %}
+            {% if error %}
+            <div class="alert alert-danger" role="alert">{{ error }}</div>
+            {% else %}       
+                <h4> 검색하신 {{ searched }} 정보입니다. 총 {{count}}개의 검색결과가 있습니다.</h4>
+                <p></p>
+                {% for ps in post_list %}
+                <div class="col-md-12 mb-2">
+                    <div class="card">
+                        <div class="card-body">
+                            {% if user == ps.author %}
+                            <div style="text-align: right">
+                                <a href="/api/posts/delete/{{ ps.id }}">
+                                    <span class="badge rounded-pill bg-danger">삭제</span>
+                                </a>
+                            </div>
+                            {% endif %}
+                            <div style="text-align: right">
+                                <a href="/api/posts/{{ ps.id }}">
+                                    <span class="badge rounded-pill bg-success">보기</span>
+                                </a>
+                            </div>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h5 class="mt-0">Title: {{ ps.title }}</h5>
+                                    <p>{{ ps.content|slice:":15"}}...</p>
+                                    <p>Category: {{ ps.category }}</p>
+                                </div>
+                                <div style="text-align: right">
+                                    <span style="font-size: small">{{ ps.author.username }}-{{ ps.created_at|timesince }} 전</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <!--페이징시작-->
+                <div style="text-align:center">
+                    <ul class="pagination">
+                        <div style="width:35%; margin: 5px;">
+                            {% if post_list.has_previous %}
+                                <a class="abutton" href="?searched={{request.GET.searched}}&page=1">맨 앞으로</a>
+                                <a class="abutton" href="?searched={{request.GET.searched}}&page={{ post_list.previous_page_number }}">이전</a>
+                            {% endif %}
+                        </div>
+                        <div style="width:30%; margin: 5px;">
+                            {% for page in post_list.paginator.page_range %}
+                                {% if page >= post_list.number|add:-2 and page <= post_list.number|add:2 %}
+                                <span class="{% if page == post_list.number %}current{% endif %}">
+                                    <a href="?searched={{request.GET.searched}}&page={{ page }}">{{ page }}</a>
+                                </span>
+                                {% elif page >= post_list.number|add:-3 and page <= post_list.number|add:3 %}
+                                    ..
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div style="width:35%; margin: 5px;">
+                            {% if post_list.has_next %}
+                                <a class="abutton" href="?searched={{request.GET.searched}}&page={{ post_list.next_page_number }}">다음</a>
+                                <a class="abutton" href="?searched={{request.GET.searched}}&page={{ post_list.paginator.num_pages }}">맨 뒤로</a>
+                            {% endif %}
+                        </div>
+                    </ul>
+                </div>
+            {% endif %}
+        {% else %}
+            <h3> 검색어를 입력해주세요. </h3>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
