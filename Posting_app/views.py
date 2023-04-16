@@ -49,7 +49,7 @@ def delete_posting_view(request, id):
     try:
         my_post = Posting.objects.get(id=id)
     except:
-        return render(go_to)
+        return redirect(go_to)
     if my_post.author == request.user or request.user.is_superuser:
         my_post.delete()
     print(go_to)
