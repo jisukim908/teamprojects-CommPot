@@ -19,6 +19,7 @@
                                                 <span class="text-muted">{{ posting.author_name }} (No more exists)</span>
                                             {% endif %}
                                             {% if posting.author and user.is_authenticated and user != posting.author %}
+
                                                 {% if posting.author in user.follow.all %}
                                                     <button class='btn btn-success'
                                                             onclick="location.href='/api/user/follow/{{ posting.author }}?from='+window.location.href">
@@ -41,13 +42,20 @@
                                         </a>
                                     {% endif %}
                                     {% if posting.author == user or user.is_superuser %}
+
                                         <a href="/api/posts/delete/{{ posting.id }}">
                                             <span class="badge rounded-pill bg-danger">삭제</span>
                                         </a>
                                     {% endif %}
                                 </div>
                                 <div class="media">
-                                    <div class="media-bod">
+                                    <div class="media-body">
+                                        {% for img in posting.embed.all %}
+                                            <div class="card">
+                                                <img src="{{ img.image.url }}" class='responsive'>
+                                            </div>
+                                        {% endfor %}
+
                                         <pre class="mt-0 text-wrap" style='font-size: large'>{{ posting.content|linebreaks}}</pre>
                                     </div>
                                 </div>

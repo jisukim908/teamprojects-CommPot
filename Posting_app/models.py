@@ -36,3 +36,12 @@ class PostingComment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='댓글 작성일')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='댓글 수정일')
     author_name = models.CharField(max_length=31)
+
+
+class PostingImage(models.Model):
+    class Meta:
+        db_table = 'post image'
+    posting = models.ForeignKey(
+        Posting, on_delete=models.CASCADE, related_name='embed')
+    image = models.ImageField(upload_to='post_images/', blank=True, null=True)
+

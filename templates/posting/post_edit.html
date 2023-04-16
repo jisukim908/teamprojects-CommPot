@@ -10,12 +10,13 @@
                         <div class="media">
                             <div class="media-body">
                                 {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
-                                {% if posting.id %}
+                                    {% if posting.id %}
                                     <form class="input-group mb-3"
                                           action="/api/posts/edit/{{ posting.id }}"
-                                          method="post">
+                                          method="post"
+                                          enctype="multipart/form-data">
                                     {% else %}
-                                        <form class="input-group mb-3" action="/api/posts/edit/0" method="post">
+                                        <form class="input-group mb-3" action="/api/posts/edit/0" method="post" enctype="multipart/form-data">
                                         {% endif %}
                                         {% csrf_token %}
                                         <div class="container timeline-container">
@@ -40,6 +41,23 @@
                                             <label for="content">Content:</label>
                                             <br>
                                             <textarea class="form-control" style="resize: none" name="content" rows="18">{{ posting.content }}</textarea>
+                                            <br>
+                                            Saved Images: {% if posting.embed.all.count == 0 or posting.id == None %} None. 
+                                            {% else %}
+                                            {% for img in posting.embed.all %}
+                                            <div class="form-group">
+                                                <img src="{{ img.image.url }}" width="50" height="50">
+                                                <input type="checkbox" id="{{img.id}}" name="{{img.id}}">
+                                                <label for="{{img.id}}">Delete {{img.url|slice:"12:"}} Image</label>
+                                            </div>
+                                            {% endfor %}
+                                            {% endif %}
+                                            
+                                            <div class="form-group mt-2 mb-2">
+                                                <label for="images">Post image:</label>
+                                                <input type="file" class="form-control" id="images" name="images" multiple>
+                                            </div>
+                                            
                                             <br>
                                             <button class="btn btn-primary" type="submit">Save</button>
                                         </div>

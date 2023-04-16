@@ -1,6 +1,6 @@
 
 from django.shortcuts import render, redirect
-from .models import Posting, PostingComment
+from .models import Posting, PostingComment, PostingImage
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -12,36 +12,36 @@ def home(request):
 
 
 def post_view(request):
+    category = request.GET.get('category', '')
+    subscribe = request.GET.get('subscribed', '')
+    all_post = []
+    if category:
+        all_post = Posting.objects.filter(category=category)
+    elif subscribe == 'only':
+        all_post = Posting.objects.filter(
+            author__in=request.user.follow.all())
+        pass
+    else:
+        all_post = Posting.objects.all()
+    all_post = all_post.order_by('-created_at')
+    page = int(request.GET.get('page', '1'))
+    paginator = Paginator(all_post, 5)
+    post_list = paginator.get_page(page)
+    return render(request, 'posting/post.html', {'post_list': post_list})
+    
+def search(request):
     if request.method == 'GET':
-        category = request.GET.get('category', '')
-        subscribe = request.GET.get('subscribed', '')
-        all_post = []
-        if category:
-            all_post = Posting.objects.filter(category=category)
-        elif subscribe == 'only':
-            all_post = Posting.objects.filter(
-                author__in=request.user.follow.all())
-            pass
-        else:
-            all_post = Posting.objects.all()
-        all_post = all_post.order_by('-created_at')
-        page = int(request.GET.get('page', '1'))
-        paginator = Paginator(all_post, 5)
+        searched = request.GET.get("searched","")     
+        posts = Posting.objects.filter(content__contains=searched).order_by('-created_at')
+        if posts.exists() == False:
+            return render(request, 'posting/searched.html', {'searched': searched, 'error': "찾으시는 검색어를 가진 글은 존재하지 않습니다."}) 
+        count = posts.count()
+        page = int(request.GET.get('page','1'))
+        paginator = Paginator(posts,5)
         post_list = paginator.get_page(page)
-        return render(request, 'posting/post.html', {'post_list': post_list})
-    elif request.method == 'POST':
-        user = request.user.is_authenticated
-        if not user:
-            return redirect('/api/user/login')
-
-        # user = request.user
-
-        my_post = Posting()
-        my_post.author = user
-        my_post.content = request.POST.get('my-content', '')
-        my_post.save()
-        return redirect('/api/posts/')
-
+        return render(request, 'posting/searched.html', {'searched': searched, "post_list": post_list, 'count':count})
+    else:
+        return render(request, 'posting/searched.html', {})
 
 @login_required
 def delete_posting_view(request, id):
@@ -69,6 +69,7 @@ def posting_detail_view(request, id):
 
 @login_required
 def posting_edit_view(request, id):
+    print(request.FILES)
     # 1. id가 0 인지 확인
     if id == 0:
         my_posting = Posting()
@@ -98,6 +99,22 @@ def posting_edit_view(request, id):
         if (title.strip() == "") or (content.strip() == ""):
             return render(request, 'posting/post_edit.html', {'posting': my_posting, 'error': "please write title and content!"})
         my_posting.category = category
+        my_posting.save()
+        for post_image in my_posting.embed.all():
+            delete_check = request.POST.get(str(post_image.id), '')
+            if delete_check == 'on':
+                post_image.image.delete(save=False)
+                post_image.delete()
+
+        for img in request.FILES.getlist('images'):
+            print(my_posting.title, img)
+            photo = PostingImage()
+            # 외래키로 현재 생성한 Post의 기본키를 참조한다.
+            photo.posting = my_posting
+            # imgs로부터 가져온 이미지 파일 하나를 저장한다.
+            photo.image = img
+            # 데이터베이스에 저장
+            photo.save()
         my_posting.save()
         return redirect('/api/posts/'+str(id)) if id else redirect('/api/posts')
     else:

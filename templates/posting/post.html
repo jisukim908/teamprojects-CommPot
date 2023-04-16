@@ -20,26 +20,33 @@
                             <span class="badge rounded-pill bg-danger">삭제</span>
                         </a>
                     </div>
-                    {% endif %}
-                    <div style="text-align: right">
-                        <a href="/api/posts/{{ ps.id }}">
-                            <span class="badge rounded-pill bg-success">보기</span>
-                        </a>
-                    </div>
-                    <div class="media">
-                        <div class="media-body">
-                            <h5 class="mt-0">{{ ps.title }}</h5>
-                            <p>{{ ps.content|slice:":15" }}...</p>
-                        </div>
-                        <div style="text-align: right">
-                            <span style="font-size: small">{{ ps.author_name }}-{{ ps.created_at|timesince }}
-                                전</span>
+                            {% endif %}
+                            <div style="text-align: right">
+                                <a href="/api/posts/{{ ps.id }}">
+                                    <span class="badge rounded-pill bg-success">보기</span>
+                                </a>
+                            </div>
+                            <div class="media">
+                                {% if ps.embed.first %}
+                                    <img src='{{ ps.embed.first.image.url }}'
+                                         class='align-self-center float-left mr-3 img-thumbnail'
+                                         style='width:200px'>
+                                {% else %}
+                                    <div style='width:200px;height: 120px;text-align: center; background-color:gray;color:white;line-height:120px;'>No Image</div>
+                                {% endif %}
+                                <div class="media-body">
+                                    <h5 class="mt-0">{{ ps.title }}</h5>
+                                    <p>{{ ps.content|slice:":15" }}{% if ps.content|slice:":15" != ps.content %}...{%endif%}</p>
+                                    <p style="text-align: right">
+                                        <span style="font-size: small">{{ ps.author.username }}-{{ ps.created_at|timesince }} 전</span>
+                                    </p>
+                                </div>
+                                
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
         <!--페이지네이션 시작-->
         <div style="text-align:center">
             <ul class="pagination">
