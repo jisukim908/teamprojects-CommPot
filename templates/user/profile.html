@@ -2,193 +2,188 @@
 {% load static %}
 {% block title %}{{ profile.username }}'s profile{% endblock %}
 {% block content %}
-    <!-- 모달창 시작 -->
-    <div class="modal fade"
-         data-bs-backdrop="static"
-         id="exampleModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit your Profile</h5>
-                </div>
-                <div class="modal-body">
-                    <form class="form-area"
-                          method="post"
-                          action="/api/profile/{{ profile.username }}"
-                          enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="form-group mt-2 mb-2">
-                            <label for="locate">Region:</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="locate"
-                                   name="locate"
-                                   value="{{ profile.locate }}">
-                        </div>
-                        <div class="form-group mt-2 mb-2">
-                            <label for="description">User Description:</label>
-                            <textarea class="form-control"
-                                      style="resize: none"
-                                      name='description'
-                                      id="description">{{profile.description}}</textarea>
-                        </div>
-                        <div class="form-group mt-2 mb-2">
-                            <label for="img">Profile image:</label>
-                            <input type="file" class="form-control" id="img" name="img">
-                        </div>
-                        <div class="form-group">
-                            <input type="checkbox" id="default" name="default">
-                            <label for="default">Delete Profile Image</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="float:right;">update</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancle</button>
-                </div>
+<!-- 모달창 시작 -->
+<div class="modal fade" data-bs-backdrop="static" id="exampleModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit your Profile</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-area" method="post" action="/api/profile/{{ profile.username }}"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group mt-2 mb-2">
+                        <label for="locate">Region:</label>
+                        <input type="text" class="form-control" id="locate" name="locate" value="{{ profile.locate }}">
+                    </div>
+                    <div class="form-group mt-2 mb-2">
+                        <label for="description">User Description:</label>
+                        <textarea class="form-control" style="resize: none" name='description'
+                            id="description">{{profile.description}}</textarea>
+                    </div>
+                    <div class="form-group mt-2 mb-2">
+                        <label for="img">Profile image:</label>
+                        <input type="file" class="form-control" id="img" name="img">
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="default" name="default">
+                        <label for="default">Delete Profile Image</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="float:right;">update</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancle</button>
             </div>
         </div>
     </div>
-    <!-- 모달창 끝 -->
-    <div class="container timeline-container">
-        <div class="row">
-            <!-- 왼쪽 컬럼: username, location, edit button -->
-            <div class="col-md-3">
-                <div class="row mb-2">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="media-body" style="text-align: center">
-                                        {% if profile.image %}
-                                            <img src="{{ profile.image.url }}" width="100">
-                                            <br>
-                                        {% else %}
-                                            <img src="{% static 'img/9804608.jpg' %}"
-                                                 width="100"
-                                                 alt="default profile">
-                                            <br>
-                                        {% endif %}
-                                        <h3 class="mt-0">{{ profile.username }}</h3>
-                                        <h5>Locate at</h5>
-                                        <span>{{ profile.locate }}</span>
-                                        <hr>
-                                        <!-- Button trigger modal -->
-                                        {% if profile.username == user %}
-                                            <button type="button"
-                                                    class="btn btn-primary"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal">Edit Profile</button>
-                                        {% else %}
-                                            {% if not user.is_authenticated %}
-                                                <a href="/api/user/login">
-                                                    <button type="button" class="btn btn-primary">Login to Edit</button>
-                                                </a>
-                                            {% else %}
-                                                {% if user in profile.username.followee.all %}
-                                                    <button class='btn btn-success'
-                                                            onclick="location.href='/api/user/follow/{{ profile.username }}?from='+window.location.href">
-                                                        Subscribing
-                                                    </button>
-                                                {% else %}
-                                                    <button class='btn btn-secondary'
-                                                            onclick="location.href='/api/user/follow/{{ profile.username }}?from='+window.location.href">
-                                                        Subscribe
-                                                    </button>
-                                                {% endif %}
-                                            {% endif %}
-                                        {% endif %}
-                                        <h6 class="card-subtitle mt-2 text-muted">Subscribers: {{ profile.username.followee.count }}</h6>
-                                        <h6 class="card-subtitle mt-2 text-muted">Subscribing: {{ profile.username.follow.count }}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="media-body">
-                                        <h5>{{ profile.username }} subscribes...</h5>
-                                        {% if profile.username.follow.count == 0 %}
-                                            <li>No one.</li>
-                                        {% else %}
-                                            {% for fl in profile.username.follow.all %}
-                                                <a href="/api/profile/{{ fl.username }}">
-                                                    <li>{{ fl.username }}</li>
-                                                </a>
-                                            {% endfor %}
-                                        {% endif %}
-                                        <h5>and subscribed by...</h5>
-                                        {% if profile.username.followee.count == 0 %}
-                                            <li>No one.</li>
-                                        {% else %}
-                                            {% for fl in profile.username.followee.all %}
-                                                <a href="/api/profile/{{ fl.username }}">
-                                                    <li>{{ fl.username }}</li>
-                                                </a>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </div>
+</div>
+<!-- 모달창 끝 -->
+<div class="container timeline-container">
+    <div class="row">
+        <!-- 왼쪽 컬럼: username, location, edit button -->
+        <div class="col-md-3">
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body" style="text-align: center">
+                                    {% if profile.image %}
+                                    <img src="{{ profile.image.url }}" width="100">
+                                    <br>
+                                    {% else %}
+                                    <img src="{% static 'img/9804608.jpg' %}" width="100" alt="default profile">
+                                    <br>
+                                    {% endif %}
+                                    <h3 class="mt-0">{{ profile.username }}</h3>
+                                    <h5>Locate at</h5>
+                                    <span>{{ profile.locate }}</span>
+                                    <hr>
+                                    <!-- Button trigger modal -->
+                                    {% if profile.username == user %}
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">Edit Profile</button>
+                                    {% else %}
+                                    {% if not user.is_authenticated %}
+                                    <a href="/api/user/login">
+                                        <button type="button" class="btn btn-primary">Login to Edit</button>
+                                    </a>
+                                    {% else %}
+                                    {% if user in profile.username.followee.all %}
+                                    <button class='btn btn-success'
+                                        onclick="location.href='/api/user/follow/{{ profile.username }}?from='+window.location.href">
+                                        Subscribing
+                                    </button>
+                                    {% else %}
+                                    <button class='btn btn-secondary'
+                                        onclick="location.href='/api/user/follow/{{ profile.username }}?from='+window.location.href">
+                                        Subscribe
+                                    </button>
+                                    {% endif %}
+                                    {% endif %}
+                                    {% endif %}
+                                    <h6 class="card-subtitle mt-2 text-muted">Subscribers:
+                                        {{ profile.username.followee.count }}</h6>
+                                    <h6 class="card-subtitle mt-2 text-muted">Subscribing:
+                                        {{ profile.username.follow.count }}</h6>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <!-- 오른 쪽 컬럼: description-->
-            <div class="col-md-9">
-                <div class="row mb-2">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="media-body">
-                                        <h4 class="mt-0">User's description</h4>
-                                        <div class="card bg-light border-0">
-                                            <div class="card-body">{{ profile.description }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <h4>
-                    <br>
-                    {{ profile.username }}'s Posts
-                </h4>
-                {% for ps in posts %}
-                    <div class="col-md-12 mb-2">
-                        <div class="card">
-                            <a class="text-dark text-decoration-none" href="/api/posts/{{ ps.id }}">
-                                <div class="card-body">
-                                    <h5 class="mt-0">{{ ps.title }}</h5>
-                                    <div class="media">
-                                        <div class="media-body">
-                                            {{ ps.content|slice:":3" }}...
-                                            <div style="text-align: right">
-                                                <span style="font-size: small">작성일:{{ ps.created_at }}-{{ ps.updated_at|timesince }}전
-                                                수정</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% if ps.author == user or user.is_superuser %}
-                                        <div style="text-align: right">
-                                            <a href="/api/posts/delete/{{ ps.id }}?from=/api/profile/{{ profile.username }}">
-                                                <span class="badge rounded-pill bg-danger">삭제</span>
-                                            </a>
-                                        </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <h5>{{ profile.username }} subscribes...</h5>
+                                    {% if profile.username.follow.count == 0 %}
+                                    <li>No one.</li>
+                                    {% else %}
+                                    {% for fl in profile.username.follow.all %}
+                                    <a href="/api/profile/{{ fl.username }}">
+                                        <li>{{ fl.username }}</li>
+                                    </a>
+                                    {% endfor %}
+                                    {% endif %}
+                                    <h5>and subscribed by...</h5>
+                                    {% if profile.username.followee.count == 0 %}
+                                    <li>No one.</li>
+                                    {% else %}
+                                    {% for fl in profile.username.followee.all %}
+                                    <a href="/api/profile/{{ fl.username }}">
+                                        <li>{{ fl.username }}</li>
+                                    </a>
+                                    {% endfor %}
                                     {% endif %}
                                 </div>
-                            </a>
+                            </div>
                         </div>
-                    {% endfor %}
+                    </div>
+                    <div class='card'>
+                        <div class='card-body'>
+                            <a href="/api/user/delete">
+                                <button class='btn btn-danger'>Delete My Account</button>
+                            </a>
+
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- 오른 쪽 컬럼: description-->
+        <div class="col-md-9">
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="mt-0">User's description</h4>
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body">{{ profile.description }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h4>
+                <br>
+                {{ profile.username }}'s Posts
+            </h4>
+            {% for ps in posts %}
+            <div class="col-md-12 mb-2">
+                <div class="card">
+                    <a class="text-dark text-decoration-none" href="/api/posts/{{ ps.id }}">
+                        <div class="card-body">
+                            <h5 class="mt-0">{{ ps.title }}</h5>
+                            <div class="media">
+                                <div class="media-body">
+                                    {{ ps.content|slice:":3" }}...
+                                    <div style="text-align: right">
+                                        <span
+                                            style="font-size: small">작성일:{{ ps.created_at }}-{{ ps.updated_at|timesince }}전
+                                            수정</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if ps.author == user or user.is_superuser %}
+                            <div style="text-align: right">
+                                <a href="/api/posts/delete/{{ ps.id }}?from=/api/profile/{{ profile.username }}">
+                                    <span class="badge rounded-pill bg-danger">삭제</span>
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
+</div>
 {% endblock %}
