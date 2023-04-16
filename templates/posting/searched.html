@@ -20,7 +20,7 @@
                 <div class="col-md-12 mb-2">
                     <div class="card">
                         <div class="card-body">
-                            {% if user == ps.author %}
+                            {% if user == ps.author or user.is_superuser %}
                             <div style="text-align: right">
                                 <a href="/api/posts/delete/{{ ps.id }}">
                                     <span class="badge rounded-pill bg-danger">삭제</span>
@@ -39,7 +39,7 @@
                                     <p>Category: {{ ps.category }}</p>
                                 </div>
                                 <div style="text-align: right">
-                                    <span style="font-size: small">{{ ps.author.username }}-{{ ps.created_at|timesince }} 전</span>
+                                    <span style="font-size: small">{{ ps.author_name }}-{{ ps.created_at|timesince }} 전</span>
                                 </div>
                             </div>
                         </div>

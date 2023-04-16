@@ -12,5 +12,6 @@ urlpatterns = [
     path("api/user/logout/", views.logout_view, name="logout"),
     path("api/user/follow/<str:path_username>",
          views.user_follow_view, name='follow'),
+    path("api/user/delete/", views.delete_account_view, name='delete-acount')
 
 ]

@@ -39,6 +39,7 @@
                         <div class="card-body">
                             <h5>You're Subscribing...</h5>
                             <ul>
+                                {% if user.follow.all.count == 0 %}<li>No one.</li>{% endif %}
                                 {% for fl in user.follow.all %}
                                     <a href="/api/profile/{{ fl.username }}">
                                         <li>{{ fl.username }}</li>

@@ -1,4 +1,4 @@
-from .models import Profile, UserModel
+from .models import Profile
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -31,7 +31,7 @@ def sign_up_view(request) -> HttpResponse:
             'password': request.POST.get("password", "").strip(),
             'password2': request.POST.get("password2", "").strip(),
         }
-        if UserModel.objects.filter(username=input_dictionary['username']).exists():
+        if get_user_model().objects.filter(username=input_dictionary['username']).exists():
 
             return render(request, "User/signup.html", {'error': 'Already exist ID. Try others.'})
 
@@ -50,7 +50,7 @@ def sign_up_view(request) -> HttpResponse:
         if input_dictionary['password'] != input_dictionary['password2']:
 
             return render(request, "User/signup.html", {'error': 'password confirmation doesn\'t match.'})
-        new_user = UserModel.objects.create(
+        new_user = get_user_model().objects.create(
             username=input_dictionary['username'],
             email=input_dictionary['email'],
         )
@@ -101,7 +101,10 @@ def profile_view(request, path_username: str) -> HttpResponse:
     오직 프로필 소유자 일때만 프로필의 수정을 할 수 있습니다.
     '''
     # 프로필 가져오기
-    opened_profile = Profile.objects.get(username=path_username)
+    try:
+        opened_profile = Profile.objects.get(username=path_username)
+    except:
+        return render(request, 'no_user.html')
     if request.method == 'GET':
         # 역참조로 지정된 사용자의 글만 가져오기
         posts = opened_profile.username.posting_set.order_by('-created_at')
@@ -129,7 +132,10 @@ def profile_view(request, path_username: str) -> HttpResponse:
 @login_required
 def user_follow_view(request, path_username):
     me = request.user
-    click_user = UserModel.objects.get(username=path_username)
+    try:
+        click_user = get_user_model().objects.get(username=path_username)
+    except:
+        return render(request, 'no_user.html')
     if me in click_user.followee.all():
         print('unfollow')
         click_user.followee.remove(request.user)
@@ -137,3 +143,19 @@ def user_follow_view(request, path_username):
         print('follow')
         click_user.followee.add(request.user)
     return HttpResponseRedirect(request.GET.get('from', '/'))
+
+
+@login_required
+def delete_account_view(request):
+    if request.method == 'POST':
+        password = request.POST.get('password', '')
+        my_account = get_user_model().objects.get(username=request.user.username)
+        user = authenticate(
+            request, username=request.user.username, password=password)
+        if user:
+            logout(request)
+            my_account.delete()
+            return redirect('/')
+        return render(request, 'User/delete_account.html', {'error': 'Worng Password.'})
+    else:
+        return render(request, 'User/delete_account.html')

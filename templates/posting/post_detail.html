@@ -13,8 +13,13 @@
                                 <div style="text-align: right">
                                     <p class="card-text">
                                         <h5 class="card-title">
-                                            <a href="/api/profile/{{ posting.author.username }}">{{ posting.author }}</a>
-                                            {% if user.is_authenticated and user != posting.author %}
+                                            {% if posting.author %}
+                                                <a href="/api/profile/{{ posting.author.username }}">{{ posting.author }}</a>
+                                            {% else %}
+                                                <span class="text-muted">{{ posting.author_name }} (No more exists)</span>
+                                            {% endif %}
+                                            {% if posting.author and user.is_authenticated and user != posting.author %}
+
                                                 {% if posting.author in user.follow.all %}
                                                     <button class='btn btn-success'
                                                             onclick="location.href='/api/user/follow/{{ posting.author }}?from='+window.location.href">
@@ -35,6 +40,9 @@
                                         <a href="/api/posts/edit/{{ posting.id }}">
                                             <span class="badge rounded-pill bg-danger">수정</span>
                                         </a>
+                                    {% endif %}
+                                    {% if posting.author == user or user.is_superuser %}
+
                                         <a href="/api/posts/delete/{{ posting.id }}">
                                             <span class="badge rounded-pill bg-danger">삭제</span>
                                         </a>
@@ -47,6 +55,7 @@
                                                 <img src="{{ img.image.url }}" class='responsive'>
                                             </div>
                                         {% endfor %}
+
                                         <pre class="mt-0 text-wrap" style='font-size: large'>{{ posting.content|linebreaks}}</pre>
                                     </div>
                                 </div>
@@ -78,20 +87,28 @@
                                 </div>
                                 <div style="float: right">
                                     <span style="font-size: small">
-                                        <a href="/api/profile/{{ cm.author.username }}">{{ cm.author }}</a> - {{ cm.created_at | timesince }}전
+                                        {% if cm.author.profile %}
+                                            <a href="/api/profile/{{ cm.author.username }}">{{ cm.author }}</a>
+                                        {% else %}
+                                            <span class="text-muted">{{ cm.author_name }} (No more exists)</span>
+                                        {% endif %}
+                                        - {{ cm.created_at | timesince }}전
                                     </span>
                                 </div>
                                 <br>
-                                {% if cm.author == user %}
-                                    <div style=" float: right">
+                                <div style=" float: right">
+                                    {% if cm.author == user %}
                                         <a href="/api/posts/comment/modify/{{ cm.id }}">
                                             <span class="badge bg-danger">수정</span>
                                         </a>
-                                        <a href="/api/posts/comment/delete/{{ cm.id }}">
+                                    {% endif %}
+                                    {% if cm.author == user or user.is_superuser %}
+                                        <a href='#'
+                                           onclick="location.href='/api/posts/comment/delete/{{ cm.id }}?from='+window.location.href">
                                             <span class="badge bg-danger">삭제</span>
                                         </a>
-                                    </div>
-                                {% endif %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>

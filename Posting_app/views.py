@@ -45,10 +45,13 @@ def search(request):
 
 @login_required
 def delete_posting_view(request, id):
-    my_post = Posting.objects.get(id=id)
-    if my_post.author == request.user:
-        my_post.delete()
     go_to = request.GET.get('from', '/')
+    try:
+        my_post = Posting.objects.get(id=id)
+    except:
+        return render(go_to)
+    if my_post.author == request.user or request.user.is_superuser:
+        my_post.delete()
     print(go_to)
     return redirect(go_to)
 
@@ -56,7 +59,10 @@ def delete_posting_view(request, id):
 
 
 def posting_detail_view(request, id):
-    my_posting = Posting.objects.get(id=id)
+    try:
+        my_posting = Posting.objects.get(id=id)
+    except:
+        return render(request, '404.html')
     posting_comment = PostingComment.objects.filter(posting_id=id)
     return render(request, 'posting/post_detail.html', {'posting': my_posting, 'comment': posting_comment})
 
@@ -71,11 +77,15 @@ def posting_edit_view(request, id):
         my_posting.content = ""
         my_posting.category = "recipe"
         my_posting.author = request.user
+        my_posting.author_name = request.user.username
 
     # 2. id가 0 이면, 새로운 포스팅 모델 객체를 만들면 됩니다.
     # 3. 0이 아니라면, 바로 여기아래 있는 코드한줄이 실행되면 됩니다.
     else:
-        my_posting = Posting.objects.get(id=id)
+        try:
+            my_posting = Posting.objects.get(id=id)
+        except:
+            return render(request, '404.html')
     # 4. 작성자와 동일한 사용자인지 체크하고 아니면 되돌려보내기
     if request.user != my_posting.author:
         return redirect('/api/posts/'+str(id)) if id else redirect('/api/posts')
@@ -114,13 +124,17 @@ def posting_edit_view(request, id):
 def write_comment_view(request, id: int) -> HttpResponse:
     if request.method == 'POST':
         comment = request.POST.get("comment", "")
-        current_posting = Posting.objects.get(id=id)
+        try:
+            current_posting = Posting.objects.get(id=id)
+        except:
+            return render(request, '404.html')
         user = request.user.is_authenticated
         if not user:
             return redirect('/api/user/login')
         PC = PostingComment()
         PC.comment = comment
         PC.author = request.user
+        PC.author_name = request.user.username
         PC.posting = current_posting
         PC.save()
 
@@ -129,7 +143,10 @@ def write_comment_view(request, id: int) -> HttpResponse:
 
 @login_required
 def comment_modify_view(request, id):
-    comment = PostingComment.objects.get(id=id)
+    try:
+        comment = PostingComment.objects.get(id=id)
+    except:
+        return render(request, 'no_comment.html')
     current_posting = comment.posting.id
     if request.method == 'POST':
         my_comment = request.POST.get("comment", "")
@@ -144,9 +161,11 @@ def comment_modify_view(request, id):
 
 @login_required
 def delete_comment_view(request, id):
-    comment = PostingComment.objects.get(id=id)
+    try:
+        comment = PostingComment.objects.get(id=id)
+    except:
+        return redirect(request.GET.get('from', '/'))
     current_posting = comment.posting.id
-    if comment.author == request.user:
+    if comment.author == request.user or request.user.is_superuser:
         comment.delete()
-    return redirect('/api/posts/'+str(current_posting))
-
+    return redirect(request.GET.get('from', '/'))
