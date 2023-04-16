@@ -1,92 +1,113 @@
 {% extends 'posting/base_profile.html' %}
-
-{% block title %}
-{{ posting.title }}
-{% endblock %}
-
+{% block title %}{{ posting.title }}{% endblock %}
 {% block new_content %}
-
-        <!-- 오른 쪽 컬럼-->
-        <div class="col-md-9">
-            <div class="row mb-2">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="media">
-                                <div class="media-body">
-                                    <h4 class="card-title">{{ posting.title }}</h4>
-                                    <div style="text-align: right">
-                                        <p class="card-text">
-                                        <h5 class="card-title"><a href="/api/profile/{{posting.author.username}}">{{posting.author}}</a> 
-                                            {% if user.is_authenticated and user != posting.author %}
-                                            {% if posting.author in user.follow.all %}
-                                            <button class='btn btn-success' onclick="location.href='/api/user/follow/{{posting.author}}?from='+window.location.href">Subscribing</button>
+    <!-- 오른 쪽 컬럼-->
+    <div class="col-md-9">
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="media">
+                            <div class="media-body">
+                                <h4 class="card-title">{{ posting.title }}</h4>
+                                <div style="text-align: right">
+                                    <p class="card-text">
+                                        <h5 class="card-title">
+                                            {% if posting.author %}
+                                                <a href="/api/profile/{{ posting.author.username }}">{{ posting.author }}</a>
                                             {% else %}
-                                            <button class='btn btn-secondary' onclick="location.href='/api/user/follow/{{posting.author}}?from='+window.location.href">Subscribe</button>
+                                                <span class="text-muted">{{ posting.author_name }} (No more exists)</span>
                                             {% endif %}
+                                            {% if posting.author and user.is_authenticated and user != posting.author %}
+                                                {% if posting.author in user.follow.all %}
+                                                    <button class='btn btn-success'
+                                                            onclick="location.href='/api/user/follow/{{ posting.author }}?from='+window.location.href">
+                                                        Subscribing
+                                                    </button>
+                                                {% else %}
+                                                    <button class='btn btn-secondary'
+                                                            onclick="location.href='/api/user/follow/{{ posting.author }}?from='+window.location.href">
+                                                        Subscribe
+                                                    </button>
+                                                {% endif %}
                                             {% endif %}
                                         </h5>
                                         <h5 style="font-size: small">{{ posting.created_at }}</h5>
                                         <h5 style="font-size: small">{{ posting.updated_at|timesince }}전</h5>
-                                        </p>
-                                        {% if posting.author == user %}
-                                        <a href="/api/posts/edit/{{posting.id}}">
+                                    </p>
+                                    {% if posting.author == user %}
+                                        <a href="/api/posts/edit/{{ posting.id }}">
                                             <span class="badge rounded-pill bg-danger">수정</span>
                                         </a>
-                                        <a href="/api/posts/delete/{{posting.id}}">
+                                    {% endif %}
+                                    {% if posting.author == user or user.is_superuser %}
+                                        <a href="/api/posts/delete/{{ posting.id }}">
                                             <span class="badge rounded-pill bg-danger">삭제</span>
                                         </a>
-                                        {% endif %}
-                                    </div>
-                                    <div class="media">
-                                        <div class="media-bod">
-                                            <pre class="mt-0 text-wrap" style='font-size: large'>{{ posting.content|linebreaks}}</pre>
-                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="media">
+                                    <div class="media-bod">
+                                        <pre class="mt-0 text-wrap" style='font-size: large'>{{ posting.content|linebreaks}}</pre>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <hr>
-                    <!-- 댓글 작성 하는 곳 -->
-                    <form class="input-group mb-3" action="/api/posts/comment/{{posting.id}}" method="post">
-                        {% csrf_token %}
-                        <input type="text" class="form-control" id='comment' name='comment' placeholder="댓글을 작성해주세요" />
-                        <button class="btn btn-outline-secondary" type="submit">작성</button>
-                    </form>
-                    <hr>
-                    <!-- 반복문이 들어 갈 곳 -->
-                    {% for cm in comment %}
+                </div>
+                <hr>
+                <!-- 댓글 작성 하는 곳 -->
+                <form class="input-group mb-3"
+                      action="/api/posts/comment/{{ posting.id }}"
+                      method="post">
+                    {% csrf_token %}
+                    <input type="text"
+                           class="form-control"
+                           id='comment'
+                           name='comment'
+                           placeholder="댓글을 작성해주세요"/>
+                    <button class="btn btn-outline-secondary" type="submit">작성</button>
+                </form>
+                <hr>
+                <!-- 반복문이 들어 갈 곳 -->
+                {% for cm in comment %}
                     <div class="row">
                         <div class="col-md-12">
                             <div class="media">
                                 <div class="media-body">
-                                    <h5 class="mt-0"> {{ cm.comment }} </h5>
+                                    <h5 class="mt-0">{{ cm.comment }}</h5>
                                 </div>
                                 <div style="float: right">
                                     <span style="font-size: small">
-                                        <a href="/api/profile/{{ cm.author.username }}">{{ cm.author }}</a> - {{ cm.created_at | timesince }}전
+                                        {% if cm.author.profile %}
+                                            <a href="/api/profile/{{ cm.author.username }}">{{ cm.author }}</a>
+                                        {% else %}
+                                            <span class="text-muted">{{ cm.author_name }} (No more exists)</span>
+                                        {% endif %}
+                                        - {{ cm.created_at | timesince }}전
                                     </span>
                                 </div>
                                 <br>
-                                {% if cm.author == user %}
                                 <div style=" float: right">
-                                    <a href="/api/posts/comment/modify/{{cm.id}}">
-                                        <span class="badge bg-danger">수정</span>
-                                    </a>
-                                    <a href="/api/posts/comment/delete/{{cm.id}}">
-                                        <span class="badge bg-danger">삭제</span>
-                                    </a>
+                                    {% if cm.author == user %}
+                                        <a href="/api/posts/comment/modify/{{ cm.id }}">
+                                            <span class="badge bg-danger">수정</span>
+                                        </a>
+                                    {% endif %}
+                                    {% if cm.author == user or user.is_superuser %}
+                                        <a href='#'
+                                           onclick="location.href='/api/posts/comment/delete/{{ cm.id }}?from='+window.location.href">
+                                            <span class="badge bg-danger">삭제</span>
+                                        </a>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
                             </div>
                         </div>
                     </div>
                     <hr>
-                    {% endfor %}
-                    <!-- 반복문이 끝난 곳 -->
-                </div>
+                {% endfor %}
+                <!-- 반복문이 끝난 곳 -->
             </div>
         </div>
-
+    </div>
 {% endblock %}
