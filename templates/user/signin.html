@@ -5,6 +5,7 @@
     <div class="wrap">
         <h2 class="title-center">Sign-in</h2>
         <form class="form-area" method='post' action='/api/user/login/'>
+            {% csrf_token %}
             <div class="form-group mt-2 mb-2">
                 <label for="username">ID :</label>
                 <input type="text" class="form-control" id="username" name="username">
