@@ -9,7 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 # User_app/views.py
 
 
-@csrf_exempt  # 추후 템플릿에 토큰 추가해서 제거필요
 def sign_up_view(request) -> HttpResponse:
     """
     회원가입 기능. username, email, password, password confirm을 입력받는다.
@@ -65,7 +64,6 @@ def sign_up_view(request) -> HttpResponse:
         return redirect('/api/user/login')
 
 
-@csrf_exempt
 def sign_in_view(request) -> HttpResponse:
     """username과 password를 받아 로그인"""
     if request.method == 'GET':
