@@ -9,4 +9,4 @@ We are creating a page where you can share and exchange various information such
 CommPot is a cozy community where everyone, from culinary experts to beginners, can share their own recipes, create delicious meals, and exchange their experiences. Join CommPot and be a part of a diverse community of food lovers.
 
 # ERD
-![](요리_팀과제_(2).png)
+![](/요리_팀과제_(2).png)
